@@ -7,14 +7,14 @@ from selenium.webdriver.support import expected_conditions as EC
 import unittest, time, re
 import yaml
 import sys, getopt
+from util import read_conf
 
 class RockStorTestCase(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
-        with open('config.yaml','r') as f:
-            conf = yaml.load(f)
-        self.base_url = conf['base_url']
+        self.conf = read_conf()
+        self.base_url = self.conf['base_url']
         self.verificationErrors = []
         self.accept_next_alert = True
     
