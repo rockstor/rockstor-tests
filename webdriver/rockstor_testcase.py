@@ -10,6 +10,13 @@ import sys, getopt
 from util import read_conf
 
 class RockStorTestCase(unittest.TestCase):
+    def __init__(self, methodName='runTest', screenshot_dir=None):
+        super(RockStorTestCase, self).__init__(methodName)
+        if screenshot_dir == None:
+            self.screenshot_dir = 'output'
+        else:
+            self.screenshot_dir = screenshot_dir
+
     def setUp(self):
         self.driver = webdriver.Firefox()
         self.driver.implicitly_wait(30)
@@ -21,3 +28,18 @@ class RockStorTestCase(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
 
+    def save_screenshot(self, testname):
+        self.driver.save_screenshot('%s/%s.png' % (self.screenshot_dir, 
+            testname))
+
+    @staticmethod
+    def parametrize(testcase_klass, screenshot_dir = None):
+        """ Create a suite containing all tests taken from the given
+            subclass, passing them the parameter 'param'.
+        """
+        testloader = unittest.TestLoader()
+        testnames = testloader.getTestCaseNames(testcase_klass)
+        suite = unittest.TestSuite()
+        for name in testnames:
+            suite.addTest(testcase_klass(name, screenshot_dir=screenshot_dir))
+        return suite
