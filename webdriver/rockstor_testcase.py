@@ -10,17 +10,17 @@ import sys, getopt
 from util import read_conf
 
 class RockStorTestCase(unittest.TestCase):
-    def __init__(self, methodName='runTest', screenshot_dir=None):
+    def __init__(self, methodName='runTest', conf=None):
         super(RockStorTestCase, self).__init__(methodName)
-        if screenshot_dir == None:
-            self.screenshot_dir = 'output'
+        if conf == None:
+            self.conf = read_conf()
+            self.conf['screenshot_dir'] = 'output'
         else:
-            self.screenshot_dir = screenshot_dir
+            self.conf = conf
 
     def setUp(self):
         self.driver = webdriver.Firefox()
-        self.driver.implicitly_wait(30)
-        self.conf = read_conf()
+        self.driver.implicitly_wait(15)
         self.base_url = self.conf['base_url']
         self.verificationErrors = []
         self.accept_next_alert = True
@@ -29,7 +29,7 @@ class RockStorTestCase(unittest.TestCase):
         self.driver.quit()
 
     def save_screenshot(self, testname):
-        self.driver.save_screenshot('%s/%s.png' % (self.screenshot_dir, 
+        self.driver.save_screenshot('%s/%s.png' % (self.conf['screenshot_dir'], 
             testname))
 
     @staticmethod
@@ -43,3 +43,18 @@ class RockStorTestCase(unittest.TestCase):
         for name in testnames:
             suite.addTest(testcase_klass(name, screenshot_dir=screenshot_dir))
         return suite
+    
+    def login(self):
+        # Login
+        driver = self.driver
+        driver.get(self.base_url + "/login_page")
+        driver.find_element_by_id("inputUsername").clear()
+        driver.find_element_by_id("inputUsername").send_keys("admin")
+        driver.find_element_by_id("inputPassword").clear()
+        driver.find_element_by_id("inputPassword").send_keys("admin")
+        driver.find_element_by_id("sign_in").click()
+
+        # Check that the dashboard title is displayed
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "widgets-container")))
+        dashboard_title = driver.find_element_by_id("title")
+        self.assertRegexpMatches(dashboard_title.text, r"^[\s\S]*System Dashboard[\s\S]*$")
