@@ -8,13 +8,13 @@ import unittest, time, re
 import yaml
 import sys, getopt
 from util import read_conf
+from inspect import stack
 
 class RockStorTestCase(unittest.TestCase):
     def __init__(self, methodName='runTest', conf=None):
         super(RockStorTestCase, self).__init__(methodName)
         if conf == None:
             self.conf = read_conf()
-            self.conf['screenshot_dir'] = 'output'
         else:
             self.conf = conf
 
@@ -29,11 +29,19 @@ class RockStorTestCase(unittest.TestCase):
         self.driver.quit()
 
     def save_screenshot(self, testname):
+        filename = "%s_%s" %(self.get_timestamp_str(), testname)
+        print "Saving screenshot to %s" % filename
         self.driver.save_screenshot('%s/%s.png' % (self.conf['screenshot_dir'], 
-            testname))
+            filename))
+     
+    def save_screenshot_from_stack(self):
+        self.save_screenshot(stack()[1][3])
 
+    def get_timestamp_str(self):
+        return time.strftime("%Y%m%d%H%M%S")
+    
     @staticmethod
-    def parametrize(testcase_klass, screenshot_dir = None):
+    def parametrize(testcase_klass, conf = None):
         """ Create a suite containing all tests taken from the given
             subclass, passing them the parameter 'param'.
         """
@@ -41,20 +49,7 @@ class RockStorTestCase(unittest.TestCase):
         testnames = testloader.getTestCaseNames(testcase_klass)
         suite = unittest.TestSuite()
         for name in testnames:
-            suite.addTest(testcase_klass(name, screenshot_dir=screenshot_dir))
+            suite.addTest(testcase_klass(name, conf=conf))
         return suite
-    
-    def login(self):
-        # Login
-        driver = self.driver
-        driver.get(self.base_url + "/login_page")
-        driver.find_element_by_id("inputUsername").clear()
-        driver.find_element_by_id("inputUsername").send_keys("admin")
-        driver.find_element_by_id("inputPassword").clear()
-        driver.find_element_by_id("inputPassword").send_keys("admin")
-        driver.find_element_by_id("sign_in").click()
+   
 
-        # Check that the dashboard title is displayed
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "widgets-container")))
-        dashboard_title = driver.find_element_by_id("title")
-        self.assertRegexpMatches(dashboard_title.text, r"^[\s\S]*System Dashboard[\s\S]*$")
