@@ -1,17 +1,17 @@
 
-*Check out the code*
+**Check out the code**
 
     git@github.com:rockstor/rockstor-tests.git
 
-*Install required modules*
+**Install required modules**
 
     pip install -r requirements.txt
 
-*Configure*
+**Configure**
 
 Set the rockstor base_url in webdriver/development.yaml
 
-*Run tests*
+**Run tests**
 
 cd to the webdriver directory
 
