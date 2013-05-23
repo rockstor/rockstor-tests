@@ -27,7 +27,6 @@ class Login(RockStorTestCase):
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "widgets-container")))
             dashboard_title = driver.find_element_by_id("title")
             self.assertRegexpMatches(dashboard_title.text, r"^[\s\S]*Dashboard[\s\S]*$")
-            raise Exception()
             # logout
             driver.find_element_by_id("logout_user").click()
         except Exception, e:
