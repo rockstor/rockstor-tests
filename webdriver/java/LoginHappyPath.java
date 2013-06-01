@@ -6,7 +6,8 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class Selenium2Example  {
+public class LoginHappyPath {
+
     public static void main(String[] args) {
         // Create a new instance of the Firefox driver
         // Notice that the remainder of the code relies on the interface, 
@@ -43,4 +44,6 @@ public class Selenium2Example  {
         //driver.quit();
     }
 }
+
+
 
