@@ -89,8 +89,12 @@ public class PoolResizeWith1Disk {
 
 			WebElement myWaitElement5 = (new WebDriverWait(driver, 10))
 					.until(ExpectedConditions.elementToBeClickable(By.id("disks-table")));
-
+					
+			//Select new disk		
+			WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
+			diskCheckBox3.click();
 		
+
 			WebElement resizeSubmitButton = driver.findElement(By.id("resize-pool"));
 			resizeSubmitButton.click();
 
@@ -121,6 +125,8 @@ public class PoolResizeWith1Disk {
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
+		
+		driver.quit();
 
 	}
 }
