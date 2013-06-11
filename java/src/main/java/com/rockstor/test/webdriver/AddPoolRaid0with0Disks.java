@@ -1,3 +1,5 @@
+package com.rockstor.test.webdriver;
+
 import java.io.File;
 import java.io.FileInputStream;
 import org.openqa.selenium.By;
@@ -19,23 +21,24 @@ public class AddPoolRaid0with0Disks {
 	public static void main(String[] args) throws IOException {
 		// Create a new instance of the Firefox driver
 		
-		WebDriver driver = new FirefoxDriver();
-
+                Properties prop = new Properties();
+                prop.load(AddPoolRaid0with0Disks.class.getClassLoader().
+                                getResourceAsStream("config.properties"));
+                WebDriver driver = new FirefoxDriver();
 		try{
 
-			Properties prop = new Properties();
-			prop.load(new FileInputStream("config.properties"));
-			driver.get(prop.getProperty("RockstorVm"));
-
-
+                        driver.get(prop.getProperty("RockstorVm"));
 			//User Login Input Forms
-			WebElement username = driver.findElement(By.id("inputUsername"));
+			WebElement username = driver.findElement(
+                                        By.id("inputUsername"));
 			username.sendKeys("admin");
 
-			WebElement password = driver.findElement(By.id("inputPassword"));
+                        WebElement password = driver.findElement(
+                                        By.id("inputPassword"));
 			password.sendKeys("admin");
 
-			WebElement submitButton = driver.findElement(By.id("sign_in"));
+			WebElement submitButton = driver.findElement(
+                                        By.id("sign_in"));
 			submitButton.click();
 			
 			// Select Pools from Navigation bar

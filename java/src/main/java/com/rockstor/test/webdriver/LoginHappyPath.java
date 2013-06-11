@@ -1,3 +1,5 @@
+package com.rockstor.test.webdriver;
+
 import java.io.File;
 import java.io.FileInputStream;
 import org.openqa.selenium.By;
@@ -9,20 +11,21 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot; 
 import java.io.IOException;
 import java.util.Properties;
-
+import com.rockstor.test.util.RSProps;
 
 public class LoginHappyPath{
 
 	public static void main(String[] args) throws IOException{
 		// Create a new instance of the Firefox driver
 
+                //Properties prop = new Properties();
+                //prop.load(AddPoolRaid0with0Disks.class.getClassLoader().
+                                //getResourceAsStream("config.properties"));
 		WebDriver driver = new FirefoxDriver();
 		
 		try{
 			
-			Properties prop = new Properties();
-			prop.load(new FileInputStream("config.properties"));
-			driver.get(prop.getProperty("RockstorVm"));
+			driver.get(RSProps.getProperty("RockstorVm"));
 
 			//User Login Input Forms
 			WebElement username = driver.findElement(By.id("inputUsername"));
@@ -38,11 +41,12 @@ public class LoginHappyPath{
 
 		//catch any exceptions by taking screenshots
 		catch(Exception e){
-
+                        e.printStackTrace();
 			System.out.println(e.toString());
 
-			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/LoginHappyPath.png"));
+			//File screenshotFile = ((TakesScreenshot)driver)
+                                //.getScreenshotAs(OutputType.FILE);
+			//FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/LoginHappyPath.png"));
 
 		}
 		
