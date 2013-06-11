@@ -46,7 +46,7 @@ public class AddPoolRaid0with1Disk {
 			poolsNav.click();
 
 			//Explicit Wait for Pools page to load
-			WebElement myWaitElement1 = (new WebDriverWait(driver, 30))
+			WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
 
 			// Click create Pool Button
@@ -54,7 +54,7 @@ public class AddPoolRaid0with1Disk {
 			addPool.click();
 
 			//Explicit Wait for CreatePools page. 
-			WebElement myWaitElement2 = (new WebDriverWait(driver, 30))
+			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
 
              //User Input Form to Select Pool Name
@@ -74,7 +74,7 @@ public class AddPoolRaid0with1Disk {
 			createPool.click();
 			
 			//Wait for Pools page to load
-			WebElement myWaitElement3 = (new WebDriverWait(driver, 10))
+			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
 		}
 
@@ -92,7 +92,7 @@ public class AddPoolRaid0with1Disk {
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
-
+		driver.close();
 	}
 }
 
