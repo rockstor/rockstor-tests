@@ -18,7 +18,7 @@ public class AddPoolRaid10with3Disks {
 
 	public static void main(String[] args) throws IOException {
 		// Create a new instance of the Firefox driver
-		
+
 
 		WebDriver driver = new FirefoxDriver();
 
@@ -38,13 +38,13 @@ public class AddPoolRaid10with3Disks {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
-			
+
 			// Select Pools from Navigation bar
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
 
 			//Explicit Wait for Pools page to load
-			WebElement myWaitElement1 = (new WebDriverWait(driver, 10))
+			WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
 
 
@@ -52,7 +52,7 @@ public class AddPoolRaid10with3Disks {
 			addPool.click();
 
 			//Explicit Wait for CreatePools page. 
-			WebElement myWaitElement2 = (new WebDriverWait(driver, 10))
+			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
 
 
@@ -70,13 +70,13 @@ public class AddPoolRaid10with3Disks {
 			diskCheckBox2.click();
 			WebElement diskCheckBox3 = driver.findElement(By.id("sde"));
 			diskCheckBox3.click();
-			
-		
+
+
 			//Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
 
-			WebElement myWaitElement3 = (new WebDriverWait(driver, 10))
+			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
 		}
 
@@ -94,7 +94,7 @@ public class AddPoolRaid10with3Disks {
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
-
+		driver.close();
 	}
 }
 

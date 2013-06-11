@@ -1,48 +1,58 @@
-
+import java.io.File;
+import java.io.FileInputStream;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.apache.commons.io.FileUtils; // Screenshots
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot; 
+import java.io.IOException;
+import java.util.Properties;
 
-public class LoginHappyPath {
 
-    public static void main(String[] args) {
-        // Create a new instance of the Firefox driver
-        // Notice that the remainder of the code relies on the interface, 
-        // not the implementation.
-        WebDriver driver = new FirefoxDriver();
+public class LoginHappyPath{
 
-        // And now use this to visit Google
-        driver.get("https://rockstor-iso:8443");
-        // Alternatively the same thing can be done like this
-        // driver.navigate().to("http://www.google.com");
+	public static void main(String[] args) throws IOException{
+		// Create a new instance of the Firefox driver
 
-        // Find the text input element by its name
-        WebElement username = driver.findElement(By.id("inputUsername"));
+		WebDriver driver = new FirefoxDriver();
+		
+		try{
+			
+			Properties prop = new Properties();
+			prop.load(new FileInputStream("config.properties"));
+			driver.get(prop.getProperty("RockstorVm"));
 
-        // Enter something to search for
-        username.sendKeys("admin");
+			//User Login Input Forms
+			WebElement username = driver.findElement(By.id("inputUsername"));
+			username.sendKeys("admin");
 
-        WebElement password = driver.findElement(By.id("inputPassword"));
-        password.sendKeys("admin");
+			WebElement password = driver.findElement(By.id("inputPassword"));
+			password.sendKeys("admin");
 
-        WebElement submit = driver.findElement(By.id("sign_in"));
+			WebElement submit = driver.findElement(By.id("sign_in"));
+			submit.click();
+			
+		}
 
-        // Now submit the form. WebDriver will find the form for us from the element
-        submit.click();
-        
-        WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
-        
-        logoutSubmit.click();
+		//catch any exceptions by taking screenshots
+		catch(Exception e){
 
-        // Check the title of the page
-        System.out.println("Page title is: " + driver.getTitle());
-                
-        //Close the browser	
-        //driver.quit();
-    }
+			System.out.println(e.toString());
+
+			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/LoginHappyPath.png"));
+
+		}
+		
+		//click on logout
+		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
+
+		logoutSubmit.click();
+		driver.close();
+
+	}
 }
 
 

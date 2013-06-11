@@ -45,7 +45,7 @@ public class AddPoolRaid10with10Disks {
 			poolsNav.click();
 
 			//Explicit Wait for Pools page to load
-			WebElement myWaitElement1 = (new WebDriverWait(driver, 10))
+			WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
 
 
@@ -53,7 +53,7 @@ public class AddPoolRaid10with10Disks {
 			addPool.click();
 
 			//Explicit Wait for CreatePools page. 
-			WebElement myWaitElement2 = (new WebDriverWait(driver, 10))
+			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
 
 
@@ -90,7 +90,7 @@ public class AddPoolRaid10with10Disks {
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
 
-			WebElement myWaitElement3 = (new WebDriverWait(driver, 10))
+			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
 		}
 
@@ -100,7 +100,7 @@ public class AddPoolRaid10with10Disks {
 			System.out.println(e.toString());
 
 			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/AddPool_Raid104Disks.png"));
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/AddPool_Raid10with10Disks.png"));
 
 		}
 
@@ -108,6 +108,8 @@ public class AddPoolRaid10with10Disks {
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
+		
+		driver.close();
 
 	}
 }

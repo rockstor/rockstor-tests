@@ -42,7 +42,7 @@ public class GenericDeletePool{
 			poolsNav.click();
 
 			//Explicit Wait for Pools page to load
-			WebElement myWaitElement1 = (new WebDriverWait(driver, 30))
+			WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
 			
 			//Delete Pool
@@ -50,8 +50,8 @@ public class GenericDeletePool{
 			deletePool.click();
 			
 			//Wait until the normal pool page loads
-			WebElement myWaitElement2 = (new WebDriverWait(driver, 10))
-					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
+			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
+					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
 		}
 
 		
@@ -61,7 +61,7 @@ public class GenericDeletePool{
 			System.out.println(e.toString());
 
 			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/DelPool_Raid02Disks.png"));
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/generic_DelPool.png"));
 
 		}
 
@@ -69,6 +69,7 @@ public class GenericDeletePool{
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
+		driver.close();
 
 	}
 }

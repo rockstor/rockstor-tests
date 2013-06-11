@@ -13,13 +13,11 @@ import org.openqa.selenium.TakesScreenshot;
 import java.io.IOException;
 import java.util.Properties;
 
-
-public class AddPoolRaid10with0Disks {
+public class GenericDeleteShare{
 
 	public static void main(String[] args) throws IOException {
 		// Create a new instance of the Firefox driver
-		
-
+	
 		WebDriver driver = new FirefoxDriver();
 
 		try{
@@ -39,46 +37,31 @@ public class AddPoolRaid10with0Disks {
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
 			
-			// Select Pools from Navigation bar
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
+			// Select Shares from Navigation bar
+			WebElement poolsNav = driver.findElement(By.id("shares_nav"));
 			poolsNav.click();
 
 			//Explicit Wait for Pools page to load
-			WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
-
-
-			WebElement addPool = driver.findElement(By.id("add_pool"));
-			addPool.click();
-
-			//Explicit Wait for CreatePools page. 
-			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
-
-
-			WebElement poolname = driver.findElement(By.id("pool_name"));
-			poolname.sendKeys("pool1");
-
-			//Raid Configuration Dropdown box 
-			Select raidConfigDroplist = new Select(driver.findElement(By.id("raid_level")));   
-			raidConfigDroplist.selectByIndex(2);
-
-			//Create Pool
-			WebElement createPool = driver.findElement(By.id("create_pool"));
-			createPool.click();
+			WebElement myWaitElement1 = (new WebDriverWait(driver, 10))
+					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1"))); // change id
 			
-			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
-
+			//Delete Pool
+			WebElement deletePool = driver.findElement(By.id("delete_pool_pool1")); // change id for delete share
+			deletePool.click();
+			
+			//Wait until the normal pool page loads
+			WebElement myWaitElement2 = (new WebDriverWait(driver, 10))
+					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
 		}
 
-		//catch any exceptions by taking screenshots.
+		
+		//catch any exceptions by taking screenshots
 		catch(Exception e){
 
 			System.out.println(e.toString());
 
 			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/Raid10with0DiskPool.png"));
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/DelPool_Raid02Disks.png"));
 
 		}
 
@@ -86,15 +69,8 @@ public class AddPoolRaid10with0Disks {
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
-		driver.close();
 
 	}
 }
-
-
-
-
-
-
 
 

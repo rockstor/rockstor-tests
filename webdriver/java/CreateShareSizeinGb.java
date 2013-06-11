@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.FileInputStream;
 import org.openqa.selenium.By;
@@ -13,8 +14,7 @@ import org.openqa.selenium.TakesScreenshot;
 import java.io.IOException;
 import java.util.Properties;
 
-
-public class AddPoolRaid1with5Disks {
+public class CreateShareSizeinGb {
 
 	public static void main(String[] args) throws IOException {
 		// Create a new instance of the Firefox driver
@@ -37,6 +37,8 @@ public class AddPoolRaid1with5Disks {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
+		
+			//POOLS
 			
 			// Select Pools from Navigation bar
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
@@ -60,28 +62,66 @@ public class AddPoolRaid1with5Disks {
 
 			//Raid Configuration Dropdown box 
 			Select raidConfigDroplist = new Select(driver.findElement(By.id("raid_level")));   
-			raidConfigDroplist.selectByIndex(1);
+			raidConfigDroplist.selectByIndex(0);
 
 			//Select Disks CheckBox
-			WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+			WebElement diskCheckBox1 = driver.findElement(By.id("sdd"));
 			diskCheckBox1.click();
-			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
+			WebElement diskCheckBox2 = driver.findElement(By.id("sde"));
 			diskCheckBox2.click();
-			WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
-			diskCheckBox3.click();
-			WebElement diskCheckBox4 = driver.findElement(By.id("sde"));
-			diskCheckBox4.click();
-			WebElement diskCheckBox5 = driver.findElement(By.id("sdf"));
-			diskCheckBox5.click();
 			
-
+			
 			//Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
 
 			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
+			
+			//SHARES
+		
+			//Select Shares from Navigation bar
+			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
+			sharesNav.click();
+			
+			WebElement myWaitElement4 = (new WebDriverWait(driver, 150))
+					.until(ExpectedConditions.elementToBeClickable(By.id("add_share")));
+		
+			WebElement createShare = driver.findElement(By.id("add_share"));
+			createShare.click();
+			
+
+			WebElement myWaitElement5 = (new WebDriverWait(driver, 150))
+					.until(ExpectedConditions.elementToBeClickable(By.id("create_share")));
+			
+			
+			WebElement shareName = driver.findElement(By.id("share_name"));
+			shareName.sendKeys("share1ingb");
+			
+
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
+			selectPoolDroplist.selectByIndex(0); 
+			
+
+			WebElement shareSize = driver.findElement(By.id("share_size"));
+			shareSize.sendKeys("100");
+			
+
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(2); // 1 is MB
+		
+			
+            //Submit button to create share
+			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
+			shareSubmitButton.click();
+			
+			// wiat for shares page to load
+			WebElement myWaitElement6 = (new WebDriverWait(driver, 150))
+					.until(ExpectedConditions.elementToBeClickable(By.id("add_share")));
+				
 		}
+		
+		
 
 		//catch any exceptions by taking screenshots
 		catch(Exception e){
@@ -89,7 +129,7 @@ public class AddPoolRaid1with5Disks {
 			System.out.println(e.toString());
 
 			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/AddPool_Raid15Disks.png"));
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/ShareSizerinGb.png"));
 
 		}
 
@@ -97,9 +137,16 @@ public class AddPoolRaid1with5Disks {
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
+
 		driver.close();
 	}
 }
+
+
+
+
+
+
 
 
 
