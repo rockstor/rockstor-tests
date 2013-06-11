@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 
-public class PoolResizeWith1Disk {
+
+public class CreateShareFromPoolsPage {
 
 	public static void main(String[] args) throws IOException {
 		// Create a new instance of the Firefox driver
@@ -83,30 +84,41 @@ public class PoolResizeWith1Disk {
 			WebElement myWaitElement4 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("resize-pool-popup")));
 
-			WebElement resizeButton = driver.findElement(By.id("resize-pool-popup"));
-			resizeButton.click();
+			//Add share
+			WebElement addShareButton = driver.findElement(By.id("add_share"));
+			addShareButton.click();
 
 
 			WebElement myWaitElement5 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("disks-table")));
+					.until(ExpectedConditions.elementToBeClickable(By.id("create_share")));
 
-			WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
-			diskCheckBox3.click();
-		
-			WebElement resizeSubmitButton = driver.findElement(By.id("resize-pool"));
-			resizeSubmitButton.click();
 
+			WebElement shareName = driver.findElement(By.id("share_name"));
+			shareName.sendKeys("share1");
+			
+
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
+			selectPoolDroplist.selectByIndex(0); 
+			
+
+			WebElement shareSize = driver.findElement(By.id("share_size"));
+			shareSize.sendKeys("100"); 
+			
+
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(0);//Index 0 is KB
+			
+
+            //Submit button to create share
+			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
+			shareSubmitButton.click();
+			
+
+		    // Wait for shares page to load up
 			WebElement myWaitElement6 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("resize-pool-popup")));
-
-			WebElement disksNav = driver.findElement(By.id("disks_nav"));
-			disksNav.click();
-
-			WebElement myWaitElement7 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("disks-table")));
-
-			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/PoolsResize_DisksPage.png"));
+					.until(ExpectedConditions.elementToBeClickable(By.id("add_share")));
+			
+		
 
 		}
 		//catch any exceptions by taking screenshots
@@ -115,17 +127,23 @@ public class PoolResizeWith1Disk {
 			System.out.println(e.toString());
 
 			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/PoolResize_0Disks.png"));
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/SharefromPoolsPage.png"));
 
 		}
+		
+	
 
 		//click on logout
 		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 
 		logoutSubmit.click();
 		driver.close();
+
 	}
 }
+
+
+
 
 
 
