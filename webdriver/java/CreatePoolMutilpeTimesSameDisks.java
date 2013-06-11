@@ -14,11 +14,12 @@ import java.io.IOException;
 import java.util.Properties;
 
 
-public class PoolResizeWith1Disk {
+
+public class CreatePoolMutilpeTimesSameDisks {
 
 	public static void main(String[] args) throws IOException {
 		// Create a new instance of the Firefox driver
-
+		
 		WebDriver driver = new FirefoxDriver();
 
 		try{
@@ -28,7 +29,8 @@ public class PoolResizeWith1Disk {
 			driver.get(prop.getProperty("RockstorVm"));
 
 
-			// User Login Input Forms
+
+			//User Login Input Forms
 			WebElement username = driver.findElement(By.id("inputUsername"));
 			username.sendKeys("admin");
 
@@ -37,7 +39,10 @@ public class PoolResizeWith1Disk {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
-
+			
+			for(int i =0; i <3; i++)
+			{
+			
 			// Select Pools from Navigation bar
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
@@ -51,7 +56,7 @@ public class PoolResizeWith1Disk {
 			addPool.click();
 
 			//Explicit Wait for CreatePools page. 
-			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
+			WebElement myWaitlement2 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
 
 
@@ -63,59 +68,35 @@ public class PoolResizeWith1Disk {
 			raidConfigDroplist.selectByIndex(0);
 
 			//Select Disks CheckBox
-			WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+			WebElement diskCheckBox1 = driver.findElement(By.id("sdd"));
 			diskCheckBox1.click();
-			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
+			WebElement diskCheckBox2 = driver.findElement(By.id("sde"));
 			diskCheckBox2.click();
 
-
 			//Create Pool
-			WebElement createPool = driver.findElement(By.id("create_pool"));
-			createPool.click();
+			WebElement createPool1 = driver.findElement(By.id("create_pool"));
+			createPool1.click();
 
 			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
-
-			WebElement poolLink = driver.findElement(By.linkText("pool1"));
-			poolLink.click();
-
-
+			
+			WebElement deletePool = driver.findElement(By.id("delete_pool_pool1"));
+			deletePool.click();
+			
+			//Wait until the normal pool page loads
 			WebElement myWaitElement4 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("resize-pool-popup")));
-
-			WebElement resizeButton = driver.findElement(By.id("resize-pool-popup"));
-			resizeButton.click();
-
-
-			WebElement myWaitElement5 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("disks-table")));
-
-			WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
-			diskCheckBox3.click();
-		
-			WebElement resizeSubmitButton = driver.findElement(By.id("resize-pool"));
-			resizeSubmitButton.click();
-
-			WebElement myWaitElement6 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("resize-pool-popup")));
-
-			WebElement disksNav = driver.findElement(By.id("disks_nav"));
-			disksNav.click();
-
-			WebElement myWaitElement7 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("disks-table")));
-
-			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/PoolsResize_DisksPage.png"));
-
+					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
+			
+			}
 		}
-		//catch any exceptions by taking screenshots
+
+		//catch any exceptions by taking screenshots.
 		catch(Exception e){
 
 			System.out.println(e.toString());
 
 			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/PoolResize_0Disks.png"));
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/AddPool_Raid02Disks.png"));
 
 		}
 
@@ -124,8 +105,11 @@ public class PoolResizeWith1Disk {
 
 		logoutSubmit.click();
 		driver.close();
+
 	}
 }
+
+
 
 
 

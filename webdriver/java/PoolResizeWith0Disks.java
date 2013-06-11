@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 
-public class PoolResizeWith1Disk {
+public class PoolResizeWith0Disks {
 
 	public static void main(String[] args) throws IOException {
 		// Create a new instance of the Firefox driver
@@ -90,9 +90,7 @@ public class PoolResizeWith1Disk {
 			WebElement myWaitElement5 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("disks-table")));
 
-			WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
-			diskCheckBox3.click();
-		
+			
 			WebElement resizeSubmitButton = driver.findElement(By.id("resize-pool"));
 			resizeSubmitButton.click();
 
@@ -109,13 +107,14 @@ public class PoolResizeWith1Disk {
 			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/PoolsResize_DisksPage.png"));
 
 		}
+
 		//catch any exceptions by taking screenshots
 		catch(Exception e){
 
 			System.out.println(e.toString());
 
 			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/PoolResize_0Disks.png"));
+			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/PoolResize_1Disk.png"));
 
 		}
 
@@ -126,6 +125,7 @@ public class PoolResizeWith1Disk {
 		driver.close();
 	}
 }
+
 
 
 
