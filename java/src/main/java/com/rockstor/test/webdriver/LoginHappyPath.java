@@ -31,7 +31,7 @@ public class LoginHappyPath {
     }
 
     @Test
-    public void happyPath() throws Exception {
+    public void testHappyPath() throws Exception {
         try{
 
             driver.get(RSProps.getProperty("RockstorVm"));
