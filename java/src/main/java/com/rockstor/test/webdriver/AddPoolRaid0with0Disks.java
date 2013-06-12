@@ -1,5 +1,15 @@
 package com.rockstor.test.webdriver;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+import org.junit.Ignore;
+import org.junit.BeforeClass;
+import org.junit.AfterClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
 import java.io.File;
 import java.io.FileInputStream;
 import org.openqa.selenium.By;
@@ -15,26 +25,29 @@ import org.openqa.selenium.TakesScreenshot;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.rockstor.test.util.RSProps;
 
 public class AddPoolRaid0with0Disks {
-
-	public static void main(String[] args) throws IOException {
-		// Create a new instance of the Firefox driver
-		
-                Properties prop = new Properties();
-                prop.load(AddPoolRaid0with0Disks.class.getClassLoader().
-                                getResourceAsStream("config.properties"));
-                WebDriver driver = new FirefoxDriver();
+    private static WebDriver driver;
+    
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        driver = new FirefoxDriver();
+    }
+    
+    @Test
+	public void testPool() throws Exception {
 		try{
 
-                        driver.get(prop.getProperty("RockstorVm"));
-			//User Login Input Forms
-			WebElement username = driver.findElement(
-                                        By.id("inputUsername"));
+            driver.get(RSProps.getProperty("RockstorVm"));
+			
+            //User Login Input Forms
+            WebElement username = driver.findElement(
+                    By.id("inputUsername"));
 			username.sendKeys("admin");
 
-                        WebElement password = driver.findElement(
-                                        By.id("inputPassword"));
+            WebElement password = driver.findElement(
+                    By.id("inputPassword"));
 			password.sendKeys("admin");
 
 			WebElement submitButton = driver.findElement(
@@ -46,49 +59,56 @@ public class AddPoolRaid0with0Disks {
 			poolsNav.click();
 
 			//Explicit Wait for Pools page to load
-			WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
+            WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
+                .until(ExpectedConditions.elementToBeClickable(
+                            By.id("add_pool")));
 
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
 
 			//Explicit Wait for CreatePools page. 
 			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("create_pool")));
+					.until(ExpectedConditions.elementToBeClickable(
+                                By.id("create_pool")));
 
 
 			WebElement poolname = driver.findElement(By.id("pool_name"));
 			poolname.sendKeys("pool1");
 
 			//Raid Configuration Dropdown box 
-			Select raidConfigDroplist = new Select(driver.findElement(By.id("raid_level")));   
+			Select raidConfigDroplist = new Select(
+                    driver.findElement(By.id("raid_level")));   
 			raidConfigDroplist.selectByIndex(0);
 
 			//Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
 			
-			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("delete_pool_pool1")));
+            WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
+                .until(ExpectedConditions.elementToBeClickable(
+                            By.id("delete_pool_pool1")));
 
-		}
+            WebElement logoutSubmit = driver.findElement(
+                    By.id("logout_user"));
+
+            logoutSubmit.click();
+        }
 		//catch any exceptions by taking screenshots
 		catch(Exception e){
-
-			System.out.println(e.toString());
-
-			File screenshotFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,new File("/home/priya/rockstor-tests/webdriver/java/ScreenShots/Raid0with0DiskPool.png"));
-
+            File screenshotFile = ((TakesScreenshot)driver)
+                .getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(screenshotFile,
+                    new File(RSProps.getProperty("screenshotDir") 
+                        + "/" + this.getClass().getName()+".png"));
+            throw e;
 		}
 
-		//click on logout
-		WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
-
-		logoutSubmit.click();
-		driver.close();
-
 	}
+    
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        driver.quit();
+    }
 }
 
 
