@@ -32,7 +32,9 @@ public class PoolRaid0ShareNFS {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);	
+        driver.manage().timeouts().implicitlyWait(
+                Integer.parseInt(RSProps.getProperty("waitTimeout")), 
+                TimeUnit.SECONDS);	
     }
 
     @Test
