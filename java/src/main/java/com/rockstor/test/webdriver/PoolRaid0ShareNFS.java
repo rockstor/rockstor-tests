@@ -32,7 +32,9 @@ public class PoolRaid0ShareNFS {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         driver = new FirefoxDriver();
-        driver.manage().timeouts().implicitlyWait(150, TimeUnit.SECONDS);	
+        driver.manage().timeouts().implicitlyWait(
+                Integer.parseInt(RSProps.getProperty("waitTimeout")), 
+                TimeUnit.SECONDS);	
     }
 
     @Test
@@ -55,18 +57,8 @@ public class PoolRaid0ShareNFS {
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
 
-			//Explicit Wait for Pools page to load
-            //WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
-            //    .until(ExpectedConditions.elementToBeClickable(
-            //                By.id("add_pool")));
-
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
-
-			// Wait for CreatePools page. 
-			//WebElement myWaitlement2 = (new WebDriverWait(driver, 150))
-			//		.until(ExpectedConditions.elementToBeClickable(
-            //                    By.id("create_pool")));
 
 			WebElement poolname = driver.findElement(By.id("pool_name"));
 			poolname.sendKeys("pool1");
@@ -82,30 +74,18 @@ public class PoolRaid0ShareNFS {
 			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
 			diskCheckBox2.click();
 
-			//Create Pool
+			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
-
-			//WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
-			//		.until(ExpectedConditions.elementToBeClickable(
-            //                    By.id("delete_pool_pool1")));
             
             ///// Create a share
 			
             WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
 
-			//WebElement myWaitElement4 = (new WebDriverWait(driver, 150))
-			//		.until(ExpectedConditions.elementToBeClickable(
-            //                    By.id("resize-pool-popup")));
-
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
 			addShareButton.click();
-
-			//WebElement myWaitElement5 = (new WebDriverWait(driver, 150))
-			//		.until(ExpectedConditions.elementToBeClickable(
-            //                    By.id("create_share")));
 
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
@@ -136,10 +116,6 @@ public class PoolRaid0ShareNFS {
 			WebElement shareLink = driver.findElement(By.linkText("share1"));
 			shareLink.click();
 			
-			//WebElement myWaitElement7 = (new WebDriverWait(driver, 150))
-			//		.until(ExpectedConditions.elementToBeClickable(
-            //                    By.id("js-resize")));
-			
 			WebElement addNfsExport = driver.findElement(By.id("add-export"));
 			addNfsExport.click();
 			
@@ -159,20 +135,32 @@ public class PoolRaid0ShareNFS {
 			WebElement saveButton = driver.findElement(By.id("save-new"));
 			saveButton.click();
 		
-			// WebElement cancelAdd = driver.findElement(By.linkText("Cancel"));
-			//cancelAdd.click();
-			
 			//WebElement element1 = driver.findElement(By.id("nfs-exports-table"));
 			List<WebElement> rowCollection = driver.findElements(By.xpath("//*[@id='nfs-exports-table']/tbody/tr/td[contains(.,'host1')]"));
 		    
             assertTrue(rowCollection.size() > 0);
 
             // Delete NFS export
+			WebElement nfsRow = driver.findElement(By.xpath("//*[@id='nfs-exports-table']/tbody/tr/td[contains(.,'host1')]"));
+            WebElement deleteNFS = nfsRow.findElement(By.xpath("//td/button[contains(@class,'delete-row')]"));
+            deleteNFS.click();
             
             // Delete Share
-            
+			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
+			sharesNav.click();
+			
+            WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr/td[contains(.,'share1')]"));
+            WebElement deleteShare = shareRow.findElement(By.xpath("//td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+            deleteShare.click();
+
             // Delete Pool
+			poolsNav = driver.findElement(By.id("pools_nav"));
+			poolsNav.click();
             
+            WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr/td[contains(.,'pool1')]"));
+            WebElement deletePool = poolRow.findElement(By.xpath("//td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+            deletePool.click();
+
             // Logout 
             WebElement logoutSubmit = driver.findElement(
                     By.id("logout_user"));
