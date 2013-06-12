@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({LoginTest.class})
+@SuiteClasses({PoolRaid0ShareNFS.class})
 public class RockStorSuite {
 
 }
