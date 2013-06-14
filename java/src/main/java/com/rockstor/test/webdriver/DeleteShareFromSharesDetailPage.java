@@ -25,7 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class PoolRaid0ShareSamba {
+public class DeleteShareFromSharesDetailPage {
+
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -37,7 +38,7 @@ public class PoolRaid0ShareSamba {
 	}
 
 	@Test
-	public void testShareSamba() throws Exception {
+	public void testDeleteShare() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -76,10 +77,11 @@ public class PoolRaid0ShareSamba {
 			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
-
+			
 			//wait for pool1 to appear
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
+
 
 			///// Create a share
 
@@ -109,65 +111,21 @@ public class PoolRaid0ShareSamba {
 			WebElement shareSubmitButton = driver.findElement(
 					By.id("create_share"));
 			shareSubmitButton.click();
-
-
-			///// Samba
-
-			// Share link
+			
 			WebElement shareLink = driver.findElement(By.linkText("share1"));
 			shareLink.click();
-
-			WebElement addSamba = driver.findElement(By.id("add-smb-share"));
-			addSamba.click();
-
-			//Browsable
-			Select browsable = new Select (driver.findElement(By.id("browsable")));
-			browsable.selectByIndex(0);
-
-			// Guest Ok
-			Select guestOk = new Select(driver.findElement(By.id("guest_ok")));   
-			guestOk.selectByIndex(0);
-
-			// Read only
-			Select readOnly = new Select(driver.findElement(By.id("read_only")));   
-			readOnly.selectByIndex(0);
-
-			//Comment
-			WebElement comment = driver.findElement(By.id("comment"));
-			comment.sendKeys("");
-
-			//Actions
-			WebElement saveButton = driver.findElement(By.xpath("//*[@id='smb-shares-table']/tbody/tr/td/button[contains(@id,'create')]"));
-			saveButton.click();
-
-			WebElement delSambaButton = driver.findElement(
-					By.xpath("//*[@id='smb-shares-table']/tbody/tr/td/button[contains(@id,'delete')]"));
-
-			// check for add button to disappear
-			List<WebElement> addButtonDisappear = driver.findElements(By.id("add-smb-share"));
-			assertTrue(addButtonDisappear.isEmpty());
-
-			// Delete Samba
-			delSambaButton.click();
-
-
+		
 			// Delete Share
-
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
+			WebElement shareDelete =driver.findElement(By.id("js-delete"));
+			shareDelete.click();			
+		
+			WebElement sharesNav = driver.findElement(By.linkText("shares_nav"));
 			sharesNav.click();
-
-			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
-			deleteShare.click();
-
-			// Delete Pool
-			poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
-
-			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
-			deletePool.click();
-
+			
+			WebElement textVerification = driver.findElement(
+					By.xpath("//[h4/text()='No shares have been created']"));
+			assertTrue(textVerification.getText(),true);
+		
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
@@ -193,6 +151,4 @@ public class PoolRaid0ShareSamba {
 	}
 
 }
-
-
 

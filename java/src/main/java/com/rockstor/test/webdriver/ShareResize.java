@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class PoolRaid0ShareSamba {
+public class ShareResize {
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -37,7 +37,7 @@ public class PoolRaid0ShareSamba {
 	}
 
 	@Test
-	public void testShareSamba() throws Exception {
+	public void testShareResize() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -81,6 +81,7 @@ public class PoolRaid0ShareSamba {
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
 
+
 			///// Create a share
 
 			//Shares navigation bar
@@ -110,54 +111,37 @@ public class PoolRaid0ShareSamba {
 					By.id("create_share"));
 			shareSubmitButton.click();
 
-
-			///// Samba
-
-			// Share link
 			WebElement shareLink = driver.findElement(By.linkText("share1"));
 			shareLink.click();
 
-			WebElement addSamba = driver.findElement(By.id("add-smb-share"));
-			addSamba.click();
+			// Resize share to 100 Mb
+			WebElement shareResize = driver.findElement(By.id("js-resize"));
+			shareResize.click();
 
-			//Browsable
-			Select browsable = new Select (driver.findElement(By.id("browsable")));
-			browsable.selectByIndex(0);
+			WebElement newShareSize = driver.findElement(By.id("new-size"));
+			newShareSize.clear();
+			newShareSize.sendKeys("100");
 
-			// Guest Ok
-			Select guestOk = new Select(driver.findElement(By.id("guest_ok")));   
-			guestOk.selectByIndex(0);
+			Select selectResizeShareDroplist = new Select(driver.findElement(
+					By.id("size_format")));   
+			selectResizeShareDroplist.selectByIndex(1); //Mb
 
-			// Read only
-			Select readOnly = new Select(driver.findElement(By.id("read_only")));   
-			readOnly.selectByIndex(0);
+			WebElement resizeShareSubmit =driver.findElement(By.id("resize-share"));
+			resizeShareSubmit.click();			
 
-			//Comment
-			WebElement comment = driver.findElement(By.id("comment"));
-			comment.sendKeys("");
-
-			//Actions
-			WebElement saveButton = driver.findElement(By.xpath("//*[@id='smb-shares-table']/tbody/tr/td/button[contains(@id,'create')]"));
-			saveButton.click();
-
-			WebElement delSambaButton = driver.findElement(
-					By.xpath("//*[@id='smb-shares-table']/tbody/tr/td/button[contains(@id,'delete')]"));
-
-			// check for add button to disappear
-			List<WebElement> addButtonDisappear = driver.findElements(By.id("add-smb-share"));
-			assertTrue(addButtonDisappear.isEmpty());
-
-			// Delete Samba
-			delSambaButton.click();
-
-
-			// Delete Share
-
+			//check for the size update on shares page
 			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
 			sharesNav.click();
 
-			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			WebElement shareRowToCheckSize = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'100.00 Mb')]]"));
+			assertTrue(shareRowToCheckSize.getText(),true);
+
+			//Delete share
+			WebElement shareRow = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
+			WebElement deleteShare = shareRow.findElement(
+					By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
 			deleteShare.click();
 
 			// Delete Pool
@@ -167,6 +151,8 @@ public class PoolRaid0ShareSamba {
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
+
+
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
@@ -193,6 +179,8 @@ public class PoolRaid0ShareSamba {
 	}
 
 }
+
+
 
 
 
