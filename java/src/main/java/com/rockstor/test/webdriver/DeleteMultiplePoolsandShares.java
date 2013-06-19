@@ -27,7 +27,7 @@ import junit.framework.Assert;
 
 import com.rockstor.test.util.RSProps;
 
-public class DeleteShareandPool {
+public class DeleteMultiplePoolsandShares {
 
 	private static WebDriver driver;
 
@@ -40,7 +40,7 @@ public class DeleteShareandPool {
 	}
 
 	@Test
-	public void testDeleteShareandPool() throws Exception {
+	public void testdelete2Pools() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -70,6 +70,12 @@ public class DeleteShareandPool {
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
+
+			//delete 2nd pool
+			WebElement poolRow2 = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool2')]]"));
+			WebElement deletePool2 = poolRow2.findElement(By.xpath("td/button[contains(@data-name,'pool2') and contains(@data-action,'delete')]"));
+			deletePool2.click();
+
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(

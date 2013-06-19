@@ -23,11 +23,10 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
-import junit.framework.Assert;
-
 import com.rockstor.test.util.RSProps;
 
-public class DeleteShareandPool {
+
+public class CreatePoolRaid10with3Disks {
 
 	private static WebDriver driver;
 
@@ -40,7 +39,7 @@ public class DeleteShareandPool {
 	}
 
 	@Test
-	public void testDeleteShareandPool() throws Exception {
+	public void testPoolRaid10Disks3() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -54,48 +53,71 @@ public class DeleteShareandPool {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
+		
 
-			//Delete share
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
-			sharesNav.click();
-
-			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
-			deleteShare.click();
-
-			// Delete Pool
+			// Add Pool with Raid 10
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
 
-			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
-			deletePool.click();
+			WebElement addPool = driver.findElement(By.id("add_pool"));
+			addPool.click();
+
+			WebElement poolname = driver.findElement(By.id("pool_name"));
+			poolname.sendKeys("pool1");
+
+			// Raid Configuration Dropdown box 
+			Select raidConfigDroplist = new Select(driver.findElement(
+					By.id("raid_level")));   
+			raidConfigDroplist.selectByIndex(2);
+
+			//Select Disks CheckBox
+			WebElement diskCheckBox1 = driver.findElement(By.id("sdd"));
+			diskCheckBox1.click();
+			WebElement diskCheckBox2 = driver.findElement(By.id("sde"));
+			diskCheckBox2.click();
+			WebElement diskCheckBox3 = driver.findElement(By.id("sdf"));
+			diskCheckBox3.click();
+			
+		
+			// Create Pool
+			WebElement createPool = driver.findElement(By.id("create_pool"));
+			createPool.click();
+			
+			// Look up for the error message to be displayed.
+						WebElement verifyErrorMsg = driver.findElement(
+								By.xpath("//div/form/label[text()='Raid10 requires at least 4 disks to be selected']"));
+						assertTrue(verifyErrorMsg.getText(),true);
 
 			// Logout 
-			WebElement logoutSubmit = driver.findElement(
-					By.id("logout_user"));
+						WebElement logoutSubmit = driver.findElement(
+								By.id("logout_user"));
 
-			logoutSubmit.click();
+						logoutSubmit.click();
 
-		}
-		catch(Exception e){
-			File screenshotFile = ((TakesScreenshot)driver)
-					.getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,
-					new File(RSProps.getProperty("screenshotDir") 
-							+ "/" + this.getClass().getName()+".png"));
-			throw e;
+					}
+					catch(Exception e){
+						File screenshotFile = ((TakesScreenshot)driver)
+								.getScreenshotAs(OutputType.FILE);
+						FileUtils.copyFile(screenshotFile,
+								new File(RSProps.getProperty("screenshotDir") 
+										+ "/" + this.getClass().getName()+".png"));
+						throw e;
 
-		}
+					}
 
-	}
+				}
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		driver.quit();
-	}
+				@AfterClass
+				public static void tearDownAfterClass() throws Exception {
+					driver.quit();
+				}
+
 
 }
+
+
+
+
 
 
 

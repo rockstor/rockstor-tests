@@ -25,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class CheckShareUsedandFreeSpace {
-
+public class NoDisplayofDisksAlreadyinUse {
+	
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -38,7 +38,7 @@ public class CheckShareUsedandFreeSpace {
 	}
 
 	@Test
-	public void testShareUsedandFreeSpace() throws Exception {
+	public void testDisplayUsedDisks() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -52,6 +52,7 @@ public class CheckShareUsedandFreeSpace {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
+		
 
 			// Add Pool with Raid 0
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
@@ -73,100 +74,68 @@ public class CheckShareUsedandFreeSpace {
 			diskCheckBox1.click();
 			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
 			diskCheckBox2.click();
-
+			
+			
+			
 			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
+			
+			WebElement poolRowToCheckSize = driver.findElement(
+					By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			assertTrue(poolRowToCheckSize.getText(),true);
+			
 
-			//wait for pool1 to appear
-			WebElement poolLink = driver.findElement(By.linkText("pool1"));
-			poolLink.click();
+			// Open the pools page
+			WebElement addPool2 = driver.findElement(By.id("add_pool"));
+			addPool2.click();
+			
 
+			// Check if used disks in pool1 are still displayed in available disks  
+			WebElement disksRow = driver.findElement(
+					By.xpath("//*[@id='disks-table']/tbody/tr[td[not(contains(.,'sdb')) or not(contains(.,'sdc'))]]"));
+			assertTrue(disksRow.getText(),true);
+			
+			
+			// Go back to page with pool to delete.
+			WebElement poolsNav2 = driver.findElement(By.id("pools_nav"));
+			poolsNav2.click();
 
-			///// Create a share
-
-			//Shares navigation bar
-			WebElement shareNav = driver.findElement(By.id("shares_nav"));
-			shareNav.click();
-
-			//Add share
-			WebElement addShareButton = driver.findElement(By.id("add_share"));
-			addShareButton.click();
-
-			WebElement shareName = driver.findElement(By.id("share_name"));
-			shareName.sendKeys("share1");
-
-			Select selectPoolDroplist = new Select(driver.findElement(
-					By.id("pool_name")));   
-			selectPoolDroplist.selectByIndex(0); 
-
-			WebElement shareSize = driver.findElement(By.id("share_size"));
-			shareSize.sendKeys("100"); 
-
-			Select selectSizeDroplist = new Select(driver.findElement(
-					By.id("size_format")));   
-			selectSizeDroplist.selectByIndex(0);//Index 0 is KB
-
-			// Submit button to create share
-			WebElement shareSubmitButton = driver.findElement(
-					By.id("create_share"));
-			shareSubmitButton.click();
-
-			WebElement shareLink = driver.findElement(By.linkText("share1"));
-			shareLink.click();	
-
-
-			// check for Free and Used Space in the share size graph
-			WebElement checkShareFreeSpace =driver.findElement(
-					By.xpath("//*[name()='svg']/*[name()='g']/*[name()='text' and contains(.,'% free')]"));
-
-			assertTrue(checkShareFreeSpace.getText(), true);
-
-			WebElement checkShareUsedSpace =driver.findElement(
-					By.xpath("//*[name()='svg']/*[name()='g']/*[name()='text' and contains(.,'% used')]"));
-
-			assertTrue(checkShareUsedSpace.getText(), true);
-
-			//Delete share
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
-			sharesNav.click();
-
-			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
-			deleteShare.click();
-
-			// Delete Pool
-			poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
-
+			
+			//Delete Pool	
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
 
+			
 			// Logout 
-			WebElement logoutSubmit = driver.findElement(
-					By.id("logout_user"));
+						WebElement logoutSubmit = driver.findElement(
+								By.id("logout_user"));
 
-			logoutSubmit.click();
+						logoutSubmit.click();
 
-		}
-		catch(Exception e){
-			File screenshotFile = ((TakesScreenshot)driver)
-					.getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,
-					new File(RSProps.getProperty("screenshotDir") 
-							+ "/" + this.getClass().getName()+".png"));
-			throw e;
+					}
+					catch(Exception e){
+						File screenshotFile = ((TakesScreenshot)driver)
+								.getScreenshotAs(OutputType.FILE);
+						FileUtils.copyFile(screenshotFile,
+								new File(RSProps.getProperty("screenshotDir") 
+										+ "/" + this.getClass().getName()+".png"));
+						throw e;
 
-		}
+					}
 
-	}
+				}
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		driver.quit();
-	}
+				@AfterClass
+				public static void tearDownAfterClass() throws Exception {
+					driver.quit();
+				}
+
 
 }
+
+
+
 
 

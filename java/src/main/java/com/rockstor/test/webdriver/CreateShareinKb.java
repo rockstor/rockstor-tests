@@ -23,12 +23,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
-import junit.framework.Assert;
-
 import com.rockstor.test.util.RSProps;
 
-public class DeleteShareandPool {
-
+public class CreateShareinKb {
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -40,7 +37,7 @@ public class DeleteShareandPool {
 	}
 
 	@Test
-	public void testDeleteShareandPool() throws Exception {
+	public void testShareSizeKb() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -55,7 +52,73 @@ public class DeleteShareandPool {
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
 
-			//Delete share
+			// Add Pool with Raid 0
+			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
+			poolsNav.click();
+
+			WebElement addPool = driver.findElement(By.id("add_pool"));
+			addPool.click();
+
+			WebElement poolname = driver.findElement(By.id("pool_name"));
+			poolname.sendKeys("pool1");
+
+			// Raid Configuration Dropdown box 
+			Select raidConfigDroplist = new Select(driver.findElement(
+					By.id("raid_level")));   
+			raidConfigDroplist.selectByIndex(0);
+
+			//Select Disks CheckBox
+			WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+			diskCheckBox1.click();
+			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
+			diskCheckBox2.click();
+
+			// Create Pool
+			WebElement createPool = driver.findElement(By.id("create_pool"));
+			createPool.click();
+
+			//wait for pool1 to appear
+			WebElement poolLink = driver.findElement(By.linkText("pool1"));
+			poolLink.click();
+
+			///// Create a share
+
+			//Shares navigation bar
+			WebElement shareNav = driver.findElement(By.id("shares_nav"));
+			shareNav.click();
+
+			//Add share
+			WebElement addShareButton = driver.findElement(By.id("add_share"));
+			addShareButton.click();
+
+			WebElement shareName = driver.findElement(By.id("share_name"));
+			shareName.sendKeys("share1");
+
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
+			selectPoolDroplist.selectByIndex(0); 
+
+
+			WebElement shareSize = driver.findElement(By.id("share_size"));
+			shareSize.sendKeys("100");
+
+
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(0); // 0 is KB
+
+
+			//Submit button to create share
+			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
+			shareSubmitButton.click();
+			
+			
+			//Check for the text
+			WebElement shareRowToCheckSize = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'100.00 Kb')]]"));
+			assertTrue(shareRowToCheckSize.getText(),true);
+			
+
+			// Delete Share
+
 			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
 			sharesNav.click();
 
@@ -64,7 +127,7 @@ public class DeleteShareandPool {
 			deleteShare.click();
 
 			// Delete Pool
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
+			poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
 
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
@@ -96,6 +159,3 @@ public class DeleteShareandPool {
 	}
 
 }
-
-
-
