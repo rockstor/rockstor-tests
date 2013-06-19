@@ -38,7 +38,7 @@ public class SharewithSameNameinDiffPools {
 	}
 
 	@Test
-	public void testShareSizeTb() throws Exception {
+	public void testShareNameinDiffPools() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));

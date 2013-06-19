@@ -9,7 +9,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	CreatePoolRaid1with1Disk.class,CreatePoolRaid1with1Disk.class,CreatePoolRaid10with1Disk.class,
 	CreatePoolRaid10with0Disks.class,CreatePoolRaid10with3Disks.class,
 	CreatePoolRaid0with5Disks.class,CreatePoolRaid1with5Disks.class,CreatePoolRaid10with10Disks.class,
-	NoDisplayofDisksAlreadyinUse.class,TwoPoolsWithSameName.class})
+	NoDisplayofDisksAlreadyinUse.class,TwoPoolsWithSameName.class,DeletePool.class})
 
 public class CreatePoolTestSuite {
 	

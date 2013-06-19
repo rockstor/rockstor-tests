@@ -114,19 +114,19 @@ public class CheckShareUsedandFreeSpace {
 
 			WebElement shareLink = driver.findElement(By.linkText("share1"));
 			shareLink.click();	
-			
-			
+
+
 			// check for Free and Used Space in the share size graph
 			WebElement checkShareFreeSpace =driver.findElement(
 					By.xpath("//*[name()='svg']/*[name()='g']/*[name()='text' and contains(.,'% free')]"));
-			
+
 			assertTrue(checkShareFreeSpace.getText(), true);
-	
+
 			WebElement checkShareUsedSpace =driver.findElement(
 					By.xpath("//*[name()='svg']/*[name()='g']/*[name()='text' and contains(.,'% used')]"));
 
 			assertTrue(checkShareUsedSpace.getText(), true);
-			
+
 			//Delete share
 			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
 			sharesNav.click();

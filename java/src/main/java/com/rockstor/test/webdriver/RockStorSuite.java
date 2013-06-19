@@ -5,7 +5,9 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ShareDetailsSuite.class})
+@SuiteClasses({ShareDetailsSuite.class,CreatePoolTestSuite.class,CreateShareTestSuite.class
+	,SharesTestSuite.class})
 public class RockStorSuite {
 
 }
+
