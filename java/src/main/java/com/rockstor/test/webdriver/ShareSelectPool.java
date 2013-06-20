@@ -25,7 +25,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class ShareResize {
+
+public class ShareSelectPool {
+
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -37,7 +39,7 @@ public class ShareResize {
 	}
 
 	@Test
-	public void testShareResize() throws Exception {
+	public void testSelectPoolInShare() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -51,6 +53,8 @@ public class ShareResize {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
+
+			//Create 1st Pool
 
 			// Add Pool with Raid 0
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
@@ -73,15 +77,40 @@ public class ShareResize {
 			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
 			diskCheckBox2.click();
 
+
 			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
 
-			//wait for pool1 to appear
-			WebElement poolLink = driver.findElement(By.linkText("pool1"));
-			poolLink.click();
 
+			//Create 2nd Pool
 
+			// Add Pool with Raid 0
+			WebElement addPool2 = driver.findElement(By.id("add_pool"));
+			addPool2.click();
+
+			WebElement poolname2 = driver.findElement(By.id("pool_name"));
+			poolname2.sendKeys("pool2");
+
+			// Raid Configuration Dropdown box 
+			Select raidConfigDroplist2 = new Select(driver.findElement(
+					By.id("raid_level")));   
+			raidConfigDroplist2.selectByIndex(0);
+
+			//Select Disks CheckBox
+			WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
+			diskCheckBox3.click();
+			WebElement diskCheckBox4 = driver.findElement(By.id("sde"));
+			diskCheckBox4.click();
+
+			// Create Pool
+			WebElement createPool2 = driver.findElement(By.id("create_pool"));
+			createPool2.click();
+			
+			//wait for the pool to get created
+			WebElement poolPage = driver.findElement(By.linkText("pool2"));
+			poolPage.click();
+			
 			///// Create a share
 
 			//Shares navigation bar
@@ -95,66 +124,50 @@ public class ShareResize {
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
 
-			Select selectPoolDroplist = new Select(driver.findElement(
-					By.id("pool_name")));   
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name"))); 
+			
+			WebElement verifyPoolSelect = driver. findElement(
+					By.xpath("//div/form/select/option[contains(.,'pool1') or contains(.,'pool2')]"));
+			assertTrue(verifyPoolSelect.getText(),true);
 			selectPoolDroplist.selectByIndex(0); 
-
+			
+			
 			WebElement shareSize = driver.findElement(By.id("share_size"));
-			shareSize.sendKeys("100"); 
+			shareSize.sendKeys("100");
 
-			Select selectSizeDroplist = new Select(driver.findElement(
-					By.id("size_format")));   
-			selectSizeDroplist.selectByIndex(0);//Index 0 is KB
 
-			// Submit button to create share
-			WebElement shareSubmitButton = driver.findElement(
-					By.id("create_share"));
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(0); // 0 is KB
+
+
+			//Submit button to create share
+			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
 			shareSubmitButton.click();
-
-			WebElement shareLink = driver.findElement(By.linkText("share1"));
-			shareLink.click();
-
-			// Resize share to 100 Mb
-			WebElement shareResize = driver.findElement(By.id("js-resize"));
-			shareResize.click();
-
-			WebElement newShareSize = driver.findElement(By.id("new-size"));
-			newShareSize.clear();
-			newShareSize.sendKeys("100");
-
-			Select selectResizeShareDroplist = new Select(driver.findElement(
-					By.id("size_format")));   
-			selectResizeShareDroplist.selectByIndex(1); //Mb
-
-			WebElement resizeShareSubmit =driver.findElement(By.id("resize-share"));
-			resizeShareSubmit.click();			
-
-			//check for the size update on shares page
+			
+			//Delete Share
 			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
 			sharesNav.click();
 
-
-			WebElement shareRowToCheckSize = driver.findElement(
-					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'100.00 Mb')]]"));
-			assertTrue(shareRowToCheckSize.getText(),true);
-
-			//Delete share
-			WebElement shareRow = driver.findElement(
-					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(
-					By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
+			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
 			deleteShare.click();
 
-			// Delete Pool
-			poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
-
-			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			
+			//Delete Pool
+			
+			WebElement poolsNav2 = driver.findElement(By.id("pools_nav"));
+			poolsNav2.click();
+			
+			WebElement poolRowToDelete = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			WebElement deletePool = poolRowToDelete.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
 
 
+			WebElement poolRow2ToDelete = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool2')]]"));
+			WebElement deletePool2 = poolRow2ToDelete.findElement(By.xpath("td/button[contains(@data-name,'pool2') and contains(@data-action,'delete')]"));
+			deletePool2.click();
 
+			
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
@@ -179,7 +192,12 @@ public class ShareResize {
 		driver.quit();
 	}
 
+
 }
+
+
+
+
 
 
 

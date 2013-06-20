@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class ShareResize {
+public class MultipleSharesinSamePool {
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -37,7 +37,7 @@ public class ShareResize {
 	}
 
 	@Test
-	public void testShareResize() throws Exception {
+	public void testMultipleSharesSamePool() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -88,6 +88,8 @@ public class ShareResize {
 			WebElement shareNav = driver.findElement(By.id("shares_nav"));
 			shareNav.click();
 
+			//1st Share
+
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
 			addShareButton.click();
@@ -111,39 +113,91 @@ public class ShareResize {
 					By.id("create_share"));
 			shareSubmitButton.click();
 
-			WebElement shareLink = driver.findElement(By.linkText("share1"));
-			shareLink.click();
+			WebElement shareRow1ToCheckName = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
+			assertTrue(shareRow1ToCheckName.getText(),true);
 
-			// Resize share to 100 Mb
-			WebElement shareResize = driver.findElement(By.id("js-resize"));
-			shareResize.click();
 
-			WebElement newShareSize = driver.findElement(By.id("new-size"));
-			newShareSize.clear();
-			newShareSize.sendKeys("100");
+			// 2nd Share
 
-			Select selectResizeShareDroplist = new Select(driver.findElement(
+			WebElement addShareButton2 = driver.findElement(By.id("add_share"));
+			addShareButton2.click();
+
+			WebElement shareName2 = driver.findElement(By.id("share_name"));
+			shareName2.sendKeys("share2");
+
+			Select selectPoolDroplist2 = new Select(driver.findElement(
+					By.id("pool_name")));   
+			selectPoolDroplist2.selectByIndex(0); 
+
+			WebElement shareSize2 = driver.findElement(By.id("share_size"));
+			shareSize2.sendKeys("1000"); 
+
+			Select selectSizeDroplist2 = new Select(driver.findElement(
 					By.id("size_format")));   
-			selectResizeShareDroplist.selectByIndex(1); //Mb
+			selectSizeDroplist2.selectByIndex(0);//Index 0 is KB
 
-			WebElement resizeShareSubmit =driver.findElement(By.id("resize-share"));
-			resizeShareSubmit.click();			
+			// Submit button to create share
+			WebElement shareSubmitButton2 = driver.findElement(
+					By.id("create_share"));
+			shareSubmitButton2.click();
 
-			//check for the size update on shares page
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
-			sharesNav.click();
+			WebElement shareRow2ToCheckName = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share2')]]"));
+			assertTrue(shareRow2ToCheckName.getText(),true);
 
 
-			WebElement shareRowToCheckSize = driver.findElement(
-					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'100.00 Mb')]]"));
-			assertTrue(shareRowToCheckSize.getText(),true);
+			// 3rd Share
 
-			//Delete share
+			WebElement addShareButton3 = driver.findElement(By.id("add_share"));
+			addShareButton3.click();
+
+			WebElement shareName3 = driver.findElement(By.id("share_name"));
+			shareName3.sendKeys("share3");
+
+			Select selectPoolDroplist3 = new Select(driver.findElement(
+					By.id("pool_name")));   
+			selectPoolDroplist3.selectByIndex(0); 
+
+			WebElement shareSize3 = driver.findElement(By.id("share_size"));
+			shareSize3.sendKeys("10000"); 
+
+			Select selectSizeDroplist3 = new Select(driver.findElement(
+					By.id("size_format")));   
+			selectSizeDroplist3.selectByIndex(0);//Index 0 is KB
+
+			// Submit button to create share
+			WebElement shareSubmitButton3 = driver.findElement(
+					By.id("create_share"));
+			shareSubmitButton3.click();
+
+			WebElement shareRow3ToCheckName = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share3')]]"));
+			assertTrue(shareRow3ToCheckName.getText(),true);
+
+
+			//Delete 1st Share
 			WebElement shareRow = driver.findElement(
 					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
 			WebElement deleteShare = shareRow.findElement(
 					By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
 			deleteShare.click();
+
+			//Delete 2nd Share
+			WebElement shareRow2 = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share2')]]"));
+			WebElement deleteShare2 = shareRow2.findElement(
+					By.xpath("td/button[contains(@data-name,'share2') and contains(@data-action,'delete')]"));
+			deleteShare2.click();
+
+
+			//Delete 3rd Share
+			WebElement shareRow3 = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share3')]]"));
+			WebElement deleteShare3 = shareRow3.findElement(
+					By.xpath("td/button[contains(@data-name,'share3') and contains(@data-action,'delete')]"));
+			deleteShare3.click();
+
 
 			// Delete Pool
 			poolsNav = driver.findElement(By.id("pools_nav"));
@@ -180,6 +234,7 @@ public class ShareResize {
 	}
 
 }
+
 
 
 
