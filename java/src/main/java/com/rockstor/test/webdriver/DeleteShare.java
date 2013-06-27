@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -124,6 +125,11 @@ public class DeleteShare {
 			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
 			deleteShare.click();
 			
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteShare = driver.switchTo().alert();
+			alertDeleteShare.dismiss();
+
+			
 			// verify if all shares are deleted
 			WebElement verifyTextPresent = driver.findElement(
 					By.xpath("//div/h4[text()='No shares have been created']"));
@@ -137,8 +143,10 @@ public class DeleteShare {
 			WebElement poolRowToDelete = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRowToDelete.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
-
 			
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.dismiss();
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(

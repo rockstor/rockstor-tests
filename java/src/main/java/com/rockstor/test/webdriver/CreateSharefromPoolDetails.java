@@ -26,8 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class DeleteShareFromSharesDetailPage {
-
+public class CreateSharefromPoolDetails {
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -37,9 +36,8 @@ public class DeleteShareFromSharesDetailPage {
 				Integer.parseInt(RSProps.getProperty("waitTimeout")), 
 				TimeUnit.SECONDS);	
 	}
-
 	@Test
-	public void testDeleteShare() throws Exception {
+	public void testCreateShareinsidePoolDetails() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -78,58 +76,65 @@ public class DeleteShareFromSharesDetailPage {
 			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
-			
+
 			//wait for pool1 to appear
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
 
 
-			///// Create a share
-
-			//Shares navigation bar
-			WebElement shareNav = driver.findElement(By.id("shares_nav"));
-			shareNav.click();
-
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
 			addShareButton.click();
 
+
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
 
-			Select selectPoolDroplist = new Select(driver.findElement(
-					By.id("pool_name")));   
+
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
 			selectPoolDroplist.selectByIndex(0); 
+
 
 			WebElement shareSize = driver.findElement(By.id("share_size"));
 			shareSize.sendKeys("100"); 
 
-			Select selectSizeDroplist = new Select(driver.findElement(
-					By.id("size_format")));   
+
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
 			selectSizeDroplist.selectByIndex(0);//Index 0 is KB
 
-			// Submit button to create share
-			WebElement shareSubmitButton = driver.findElement(
-					By.id("create_share"));
+
+			//Submit button to create share
+			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
 			shareSubmitButton.click();
-			
-			WebElement shareLink = driver.findElement(By.linkText("share1"));
-			shareLink.click();
-		
-			// Delete Share
-			WebElement shareDelete =driver.findElement(By.id("js-delete"));
-			shareDelete.click();	
-			
+
+			//Delete share
+			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
+			sharesNav.click();
+
+			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
+			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			deleteShare.click();
+
+
+			//Browser Popup asking confirmation to delete 
 			Alert alertDeleteShare = driver.switchTo().alert();
 			alertDeleteShare.accept();
-		
-			WebElement sharesNav = driver.findElement(By.linkText("shares_nav"));
-			sharesNav.click();
-			
-			WebElement textVerification = driver.findElement(
-					By.xpath("//h4[text()='No shares have been created']"));
-			assertTrue(textVerification.getText(),true);
-		
+
+
+			// Delete Pool
+			poolsNav = driver.findElement(By.id("pools_nav"));
+			poolsNav.click();
+
+			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			deletePool.click();
+
+
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.accept();
+
+
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
@@ -155,4 +160,7 @@ public class DeleteShareFromSharesDetailPage {
 	}
 
 }
+
+
+
 

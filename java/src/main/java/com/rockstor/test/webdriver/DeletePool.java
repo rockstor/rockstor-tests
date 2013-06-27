@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
-import junit.framework.Assert;
+
 
 import com.rockstor.test.util.RSProps;
 
@@ -62,6 +63,11 @@ public class DeletePool {
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
+			
+
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.dismiss();
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
