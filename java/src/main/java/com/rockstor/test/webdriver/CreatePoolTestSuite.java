@@ -2,7 +2,6 @@ package com.rockstor.test.webdriver;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
 @RunWith(Suite.class)
 @SuiteClasses({CreateAPool.class,CreatePoolRaid0.class,CreatePoolRaid1.class,
 	CreatePoolRaid10.class, CreatePoolRaid0with0Disks.class, CreatePoolRaid1with0Disks.class,
