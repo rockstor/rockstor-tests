@@ -24,11 +24,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
-
-
 import com.rockstor.test.util.RSProps;
 
-public class DeletePool {
+public class ListPoolDetails {
 
 	private static WebDriver driver;
 
@@ -41,7 +39,7 @@ public class DeletePool {
 	}
 
 	@Test
-	public void testdeletePool() throws Exception {
+	public void testPoolsandDetails() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -55,22 +53,49 @@ public class DeletePool {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
-			
-			// Delete Pool
+
+			// Add Pool with Raid 0
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
 
-			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			WebElement addPool = driver.findElement(By.id("add_pool"));
+			addPool.click();
+
+			WebElement poolname = driver.findElement(By.id("pool_name"));
+			poolname.sendKeys("pool1");
+
+			// Raid Configuration Dropdown box 
+			Select raidConfigDroplist = new Select(driver.findElement(
+					By.id("raid_level")));   
+			raidConfigDroplist.selectByIndex(0);
+
+			//Select Disks CheckBox
+			WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+			diskCheckBox1.click();
+			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
+			diskCheckBox2.click();
+
+			// Create Pool
+			WebElement createPool = driver.findElement(By.id("create_pool"));
+			createPool.click();
+
+			WebElement poolRow1 = driver.findElement(
+					By.xpath("//*[@id='pools-table']/tbody/tr/td/a[text()='1' or text()='pool1' or text()='4.00 Gb' or text()='raid0']"));
+			assertTrue(poolRow1.getText(), true);
+			
+			// Delete Pool
+			poolsNav = driver.findElement(By.id("pools_nav"));
+			poolsNav.click();
+
+			WebElement poolRow = driver.findElement(
+					By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			WebElement deletePool = poolRow.findElement(
+					By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
 			
-			//Browser Popup asking confirmation to delete 
+
 			Alert alertDeletePool = driver.switchTo().alert();
 			alertDeletePool.accept();
-			
-			WebElement textVerify = driver.findElement(
-					By.xpath("//h4[text()='No pools have been created.']"));
-			assertTrue(textVerify.getText(),true);
 
 
 			// Logout 
@@ -98,4 +123,5 @@ public class DeletePool {
 	}
 
 }
+
 

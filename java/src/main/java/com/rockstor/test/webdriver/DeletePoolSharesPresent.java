@@ -24,11 +24,10 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.List;
-
-
 import com.rockstor.test.util.RSProps;
 
-public class DeletePool {
+
+public class DeletePoolSharesPresent {
 
 	private static WebDriver driver;
 
@@ -41,7 +40,7 @@ public class DeletePool {
 	}
 
 	@Test
-	public void testdeletePool() throws Exception {
+	public void testDeletPoolWhenSharePresent() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -55,23 +54,82 @@ public class DeletePool {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
-			
-			// Delete Pool
+
+
+			// Add Pool with Raid 0
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
 
-			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			WebElement addPool = driver.findElement(By.id("add_pool"));
+			addPool.click();
+
+			WebElement poolname = driver.findElement(By.id("pool_name"));
+			poolname.sendKeys("pool1");
+
+			// Raid Configuration Dropdown box 
+			Select raidConfigDroplist = new Select(driver.findElement(
+					By.id("raid_level")));   
+			raidConfigDroplist.selectByIndex(0);
+
+			//Select Disks CheckBox
+			WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+			diskCheckBox1.click();
+			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
+			diskCheckBox2.click();
+
+			// Create Pool
+			WebElement createPool = driver.findElement(By.id("create_pool"));
+			createPool.click();
+
+			WebElement poolPage = driver.findElement(By.linkText("pool1"));
+			poolPage.click();
+
+			//Shares navigation bar
+			WebElement shareNav = driver.findElement(By.id("shares_nav"));
+			shareNav.click();
+
+			//Add share
+			WebElement addShareButton = driver.findElement(By.id("add_share"));
+			addShareButton.click();
+
+			WebElement shareName = driver.findElement(By.id("share_name"));
+			shareName.sendKeys("share1");
+
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name"))); 
+			selectPoolDroplist.selectByIndex(0); 
+
+			WebElement shareSize = driver.findElement(By.id("share_size"));
+			shareSize.sendKeys("100");
+
+
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(0); // 0 is KB
+
+
+			//Submit button to create share
+			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
+			shareSubmitButton.click();
+
+			//wait for shares page to load
+			WebElement shareRow = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'1') or contains(.,'share1') or contains(.,'pool1')]]"));
+			assertTrue(shareRow.getText(),true);
+
+
+			WebElement poolsNav2 = driver.findElement(By.id("pools_nav"));
+			poolsNav2.click();
+
+			//Delete Pool
+			WebElement poolRowToDelete = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			WebElement deletePool = poolRowToDelete.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
-			
-			//Browser Popup asking confirmation to delete 
+
 			Alert alertDeletePool = driver.switchTo().alert();
 			alertDeletePool.accept();
 			
 			WebElement textVerify = driver.findElement(
 					By.xpath("//h4[text()='No pools have been created.']"));
 			assertTrue(textVerify.getText(),true);
-
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
@@ -97,5 +155,14 @@ public class DeletePool {
 		driver.quit();
 	}
 
+
 }
+
+
+
+
+
+
+
+
 
