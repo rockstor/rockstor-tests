@@ -27,7 +27,7 @@ import java.util.List;
 import com.rockstor.test.util.RSProps;
 
 
-public class DeleteShare {
+public class DeletePoolSharenotPresent {
 
 	private static WebDriver driver;
 
@@ -38,9 +38,9 @@ public class DeleteShare {
 				Integer.parseInt(RSProps.getProperty("waitTimeout")), 
 				TimeUnit.SECONDS);	
 	}
-	
+
 	@Test
-	public void testDeleteShare() throws Exception {
+	public void testDeletPoolWhenSharenotPresent() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -55,7 +55,6 @@ public class DeleteShare {
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
 
-			//Create 1st Pool
 
 			// Add Pool with Raid 0
 			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
@@ -78,16 +77,12 @@ public class DeleteShare {
 			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
 			diskCheckBox2.click();
 
-
 			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
 
-			//wait for the pool to get created
 			WebElement poolPage = driver.findElement(By.linkText("pool1"));
 			poolPage.click();
-
-			///// Create a share
 
 			//Shares navigation bar
 			WebElement shareNav = driver.findElement(By.id("shares_nav"));
@@ -103,7 +98,6 @@ public class DeleteShare {
 			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name"))); 
 			selectPoolDroplist.selectByIndex(0); 
 
-
 			WebElement shareSize = driver.findElement(By.id("share_size"));
 			shareSize.sendKeys("100");
 
@@ -116,37 +110,49 @@ public class DeleteShare {
 			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
 			shareSubmitButton.click();
 
+			//wait for shares page to load
+			WebElement shareRow = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'1') or contains(.,'share1') or contains(.,'pool1')]]"));
+			assertTrue(shareRow.getText(),true);
 
+
+			WebElement poolsNav2 = driver.findElement(By.id("pools_nav"));
+			poolsNav2.click();
+			
 			//Delete Share
 			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
 			sharesNav.click();
 			
-			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			WebElement shareRowDelete = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
+			WebElement deleteShare = shareRowDelete.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
 			deleteShare.click();
 			
 			//Browser Popup asking confirmation to delete 
 			Alert alertDeleteShare = driver.switchTo().alert();
 			alertDeleteShare.accept();
 
-			
 			// verify if all shares are deleted
 			WebElement verifyTextPresent = driver.findElement(
 					By.xpath("//div/h4[text()='No shares have been created']"));
 			assertTrue(verifyTextPresent.getText(), true);
 			
-			///Also delete the pool
 
-			WebElement poolsNav2 = driver.findElement(By.id("pools_nav"));
-			poolsNav2.click();
+			//Delete Pool
+			
+			WebElement poolsNav3 = driver.findElement(By.id("pools_nav"));
+			poolsNav3.click();
 
-			WebElement poolRowToDelete = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			WebElement poolRowToDelete = driver.findElement(
+					By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRowToDelete.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
-			
-			//Browser Popup asking confirmation to delete 
+
 			Alert alertDeletePool = driver.switchTo().alert();
 			alertDeletePool.accept();
+			
+			WebElement textVerify = driver.findElement(
+					By.xpath("//h4[text()='No pools have been created.']"));
+			assertTrue(textVerify.getText(),true);
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
@@ -171,6 +177,15 @@ public class DeleteShare {
 	public static void tearDownAfterClass() throws Exception {
 		driver.quit();
 	}
+
+
 }
 
-			
+
+
+
+
+
+
+
+
