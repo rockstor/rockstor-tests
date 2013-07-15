@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -149,6 +150,10 @@ public class PoolRaid0ShareSamba {
 
 			// Delete Samba
 			delSambaButton.click();
+						
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteSamba = driver.switchTo().alert();
+			alertDeleteSamba.accept();
 
 
 			// Delete Share
@@ -159,6 +164,11 @@ public class PoolRaid0ShareSamba {
 			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
 			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
 			deleteShare.click();
+			
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteShare = driver.switchTo().alert();
+			alertDeleteShare.accept();
+
 
 			// Delete Pool
 			poolsNav = driver.findElement(By.id("pools_nav"));
@@ -167,7 +177,12 @@ public class PoolRaid0ShareSamba {
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
-
+						
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.accept();
+			
+			
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));

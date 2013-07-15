@@ -129,6 +129,7 @@ public class DeleteShareFromSharesDetailPage {
 			WebElement textVerification = driver.findElement(
 					By.xpath("//h4[text()='No shares have been created']"));
 			assertTrue(textVerification.getText(),true);
+			
 		
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
