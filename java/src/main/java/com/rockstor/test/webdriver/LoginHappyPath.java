@@ -37,10 +37,10 @@ public class LoginHappyPath {
             driver.get(RSProps.getProperty("RockstorVm"));
 
             //User Login Input Forms
-            WebElement username = driver.findElement(By.id("inputUsername"));
+            WebElement username = driver.findElement(By.id("username"));
             username.sendKeys("admin");
 
-            WebElement password = driver.findElement(By.id("inputPassword"));
+            WebElement password = driver.findElement(By.id("password"));
             password.sendKeys("admin");
 
             WebElement submit = driver.findElement(By.id("sign_in"));
