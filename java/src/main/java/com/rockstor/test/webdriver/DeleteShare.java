@@ -46,21 +46,24 @@ public class DeleteShare {
 			driver.get(RSProps.getProperty("RockstorVm"));
 
 			// Login 
-			WebElement username = driver.findElement(By.id("inputUsername"));
+			WebElement username = driver.findElement(By.id("username"));
 			username.sendKeys("admin");
 
-			WebElement password = driver.findElement(By.id("inputPassword"));
+			WebElement password = driver.findElement(By.id("password"));
 			password.sendKeys("admin");
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
 
-			//Create 1st Pool
+			//Create Pool
+
+			WebElement storageNav = driver.findElement(By.id("storage_nav"));
+			storageNav.click();
 
 			// Add Pool with Raid 0
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
+			WebElement poolsNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav.click();
-
+			
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
 
@@ -68,8 +71,7 @@ public class DeleteShare {
 			poolname.sendKeys("pool1");
 
 			// Raid Configuration Dropdown box 
-			Select raidConfigDroplist = new Select(driver.findElement(
-					By.id("raid_level")));   
+			Select raidConfigDroplist = new Select(driver.findElement(By.id("raid_level")));   
 			raidConfigDroplist.selectByIndex(0);
 
 			//Select Disks CheckBox
@@ -82,20 +84,20 @@ public class DeleteShare {
 			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
+			
+			//wait for pool1 to appear
+			WebElement poolLink = driver.findElement(By.linkText("pool1"));
+			poolLink.click();
 
-			//wait for the pool to get created
-			WebElement poolPage = driver.findElement(By.linkText("pool1"));
-			poolPage.click();
-
-			///// Create a share
+			// Create a share
 
 			//Shares navigation bar
-			WebElement shareNav = driver.findElement(By.id("shares_nav"));
-			shareNav.click();
+			WebElement sharesNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav.click();
 
 			//Add share
-			WebElement addShareButton = driver.findElement(By.id("add_share"));
-			addShareButton.click();
+			WebElement addShare = driver.findElement(By.id("add_share"));
+			addShare.click();
 
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
@@ -117,14 +119,13 @@ public class DeleteShare {
 			shareSubmitButton.click();
 
 
-			//Delete Share
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
-			sharesNav.click();
+           //Delete share
 			
 			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			WebElement deleteShare = shareRow.findElement(By.className("icon-trash"));
 			deleteShare.click();
-			
+
+
 			//Browser Popup asking confirmation to delete 
 			Alert alertDeleteShare = driver.switchTo().alert();
 			alertDeleteShare.accept();
@@ -135,23 +136,22 @@ public class DeleteShare {
 					By.xpath("//div/h4[text()='No shares have been created']"));
 			assertTrue(verifyTextPresent.getText(), true);
 			
-			///Also delete the pool
+			// Delete Pool
+			WebElement poolsNav1 = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
+			poolsNav1.click();
 
-			WebElement poolsNav2 = driver.findElement(By.id("pools_nav"));
-			poolsNav2.click();
-
-			WebElement poolRowToDelete = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRowToDelete.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			WebElement deletePool = poolRow.findElement(By.className("icon-trash"));
 			deletePool.click();
-			
+
+
 			//Browser Popup asking confirmation to delete 
 			Alert alertDeletePool = driver.switchTo().alert();
 			alertDeletePool.accept();
 
-			// Logout 
-			WebElement logoutSubmit = driver.findElement(
-					By.id("logout_user"));
 
+			// Logout 
+			WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
 			logoutSubmit.click();
 
 		}
