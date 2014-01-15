@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -43,19 +44,23 @@ public class CreateShareinGb {
 			driver.get(RSProps.getProperty("RockstorVm"));
 
 			// Login 
-			WebElement username = driver.findElement(By.id("inputUsername"));
+			WebElement username = driver.findElement(By.id("username"));
 			username.sendKeys("admin");
 
-			WebElement password = driver.findElement(By.id("inputPassword"));
+			WebElement password = driver.findElement(By.id("password"));
 			password.sendKeys("admin");
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
 
+			
+			WebElement storageNav = driver.findElement(By.id("storage_nav"));
+			storageNav.click();
+			
 			// Add Pool with Raid 0
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
+			WebElement poolsNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav.click();
-
+			
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
 
@@ -84,8 +89,8 @@ public class CreateShareinGb {
 			///// Create a share
 
 			//Shares navigation bar
-			WebElement shareNav = driver.findElement(By.id("shares_nav"));
-			shareNav.click();
+			WebElement sharesNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav.click();
 
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
@@ -118,21 +123,29 @@ public class CreateShareinGb {
 
 			// Delete Share
 
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
-			sharesNav.click();
+			WebElement sharesNav1= driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav1.click();
 
 			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			WebElement deleteShare = shareRow.findElement(By.className("icon-trash"));
 			deleteShare.click();
 
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteShare = driver.switchTo().alert();
+			alertDeleteShare.accept();
+			
 			// Delete Pool
-			poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
-
+			WebElement poolsNav1 = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
+			poolsNav1.click();
+			
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			WebElement deletePool = poolRow.findElement(By.className("icon-trash"));
 			deletePool.click();
 
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.accept();
+			
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
