@@ -26,7 +26,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class CreateSharefromPoolDetails {
+public class ViewShareCapacityAndUsage {
+	
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -36,8 +37,9 @@ public class CreateSharefromPoolDetails {
 				Integer.parseInt(RSProps.getProperty("waitTimeout")), 
 				TimeUnit.SECONDS);	
 	}
+
 	@Test
-	public void testCreateShareinsidePoolDetails() throws Exception {
+	public void testShareCapacityUsage() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -55,11 +57,11 @@ public class CreateSharefromPoolDetails {
 			
 			WebElement storageNav = driver.findElement(By.id("storage_nav"));
 			storageNav.click();
-
+			
 			// Add Pool with Raid 0
 			WebElement poolsNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav.click();
-
+			
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
 
@@ -85,62 +87,71 @@ public class CreateSharefromPoolDetails {
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
 
+			///// Create a share
+
+			//Shares navigation bar
+			WebElement sharesNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav.click();
 
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
 			addShareButton.click();
 
-
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
-
 
 			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
 			selectPoolDroplist.selectByIndex(0); 
 
 
 			WebElement shareSize = driver.findElement(By.id("share_size"));
-			shareSize.sendKeys("100"); 
+			shareSize.sendKeys("100");
 
 
-			//Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
-			//selectSizeDroplist.selectByIndex(0);//Index 0 is KB
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(2); // 2 is GB
 
 
 			//Submit button to create share
 			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
 			shareSubmitButton.click();
+			
+			//check for the text
+			WebElement shareRowToCheckSize = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'100.00 Gb')]]"));
+			//System.out.println(shareRowToCheckSize.getText());
+			assertEquals(shareRowToCheckSize.getText(),"share1 100.00 Gb pool1 4.00 Kb");
+			
+			//Explicit Wait for Pools page to load
+			//WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
+				//	.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]")));
 
-			
-			
-			//Delete share
+			// Delete Share
+
 			
 			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
 			WebElement deleteShare = shareRow.findElement(By.className("icon-trash"));
 			deleteShare.click();
 
-
 			//Browser Popup asking confirmation to delete 
 			Alert alertDeleteShare = driver.switchTo().alert();
 			alertDeleteShare.accept();
-
-
+			
 			// Delete Pool
 			WebElement poolsNav1 = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav1.click();
-
+			
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRow.findElement(By.className("icon-trash"));
 			deletePool.click();
 
-
 			//Browser Popup asking confirmation to delete 
 			Alert alertDeletePool = driver.switchTo().alert();
 			alertDeletePool.accept();
-
-
+			
 			// Logout 
-			WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
+			WebElement logoutSubmit = driver.findElement(
+					By.id("logout_user"));
 
 			logoutSubmit.click();
 
@@ -163,6 +174,3 @@ public class CreateSharefromPoolDetails {
 	}
 
 }
-
-
-

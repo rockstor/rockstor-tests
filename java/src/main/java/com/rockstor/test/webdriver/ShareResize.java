@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -43,19 +44,23 @@ public class ShareResize {
 			driver.get(RSProps.getProperty("RockstorVm"));
 
 			// Login 
-			WebElement username = driver.findElement(By.id("inputUsername"));
+			WebElement username = driver.findElement(By.id("username"));
 			username.sendKeys("admin");
 
-			WebElement password = driver.findElement(By.id("inputPassword"));
+			WebElement password = driver.findElement(By.id("password"));
 			password.sendKeys("admin");
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
 
+			
+			WebElement storageNav = driver.findElement(By.id("storage_nav"));
+			storageNav.click();
+			
 			// Add Pool with Raid 0
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
+			WebElement poolsNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav.click();
-
+			
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
 
@@ -81,12 +86,11 @@ public class ShareResize {
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
 
-
 			///// Create a share
 
 			//Shares navigation bar
-			WebElement shareNav = driver.findElement(By.id("shares_nav"));
-			shareNav.click();
+			WebElement sharesNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav.click();
 
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
@@ -95,66 +99,75 @@ public class ShareResize {
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
 
-			Select selectPoolDroplist = new Select(driver.findElement(
-					By.id("pool_name")));   
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
 			selectPoolDroplist.selectByIndex(0); 
 
+
 			WebElement shareSize = driver.findElement(By.id("share_size"));
-			shareSize.sendKeys("100"); 
+			shareSize.sendKeys("100");
 
-			Select selectSizeDroplist = new Select(driver.findElement(
-					By.id("size_format")));   
-			selectSizeDroplist.selectByIndex(0);//Index 0 is KB
 
-			// Submit button to create share
-			WebElement shareSubmitButton = driver.findElement(
-					By.id("create_share"));
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(2); // 2 is GB
+
+
+			//Submit button to create share
+			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
 			shareSubmitButton.click();
+			
 
+			//wait for share1 to appear
 			WebElement shareLink = driver.findElement(By.linkText("share1"));
 			shareLink.click();
+			
+			//Resize share
+			WebElement resizeButton = driver.findElement(By.id("js-resize"));
+			resizeButton.click();
+			
+			WebElement changeShareSize = driver.findElement(By.id("new-size"));
+			changeShareSize.clear();
+			changeShareSize.sendKeys("200");
+			
+			Select changeSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			changeSizeDroplist.selectByIndex(2); // 2 is GB
+			
+			//Submit button to create share
+			WebElement saveButton = driver.findElement(By.id("js-resize-save"));
+			saveButton.click();
+			
+            // View share
+			WebElement sharesNav1 = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav1.click();
 
-			// Resize share to 100 Mb
-			WebElement shareResize = driver.findElement(By.id("js-resize"));
-			shareResize.click();
-
-			WebElement newShareSize = driver.findElement(By.id("new-size"));
-			newShareSize.clear();
-			newShareSize.sendKeys("100");
-
-			Select selectResizeShareDroplist = new Select(driver.findElement(
-					By.id("size_format")));   
-			selectResizeShareDroplist.selectByIndex(1); //Mb
-
-			WebElement resizeShareSubmit =driver.findElement(By.id("resize-share"));
-			resizeShareSubmit.click();			
-
-			//check for the size update on shares page
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
-			sharesNav.click();
-
-
+			
+			//check for the text
 			WebElement shareRowToCheckSize = driver.findElement(
-					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'100.00 Mb')]]"));
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'200.00 Gb')]]"));
 			assertTrue(shareRowToCheckSize.getText(),true);
+			
+			// Delete Share
 
-			//Delete share
-			WebElement shareRow = driver.findElement(
-					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(
-					By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			
+			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
+			WebElement deleteShare = shareRow.findElement(By.className("icon-trash"));
 			deleteShare.click();
 
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteShare = driver.switchTo().alert();
+			alertDeleteShare.accept();
+			
 			// Delete Pool
-			poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
-
+			WebElement poolsNav1 = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
+			poolsNav1.click();
+			
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			WebElement deletePool = poolRow.findElement(By.className("icon-trash"));
 			deletePool.click();
 
-
-
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.accept();
+			
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
@@ -178,7 +191,6 @@ public class ShareResize {
 	public static void tearDownAfterClass() throws Exception {
 		driver.quit();
 	}
-
 }
 
 

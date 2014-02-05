@@ -26,7 +26,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 import com.rockstor.test.util.RSProps;
 
-public class CreateSharefromPoolDetails {
+public class ChangeSharePermission {
+
 	private static WebDriver driver;
 
 	@BeforeClass
@@ -37,7 +38,7 @@ public class CreateSharefromPoolDetails {
 				TimeUnit.SECONDS);	
 	}
 	@Test
-	public void testCreateShareinsidePoolDetails() throws Exception {
+	public void testChangeSharePermission() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -51,15 +52,14 @@ public class CreateSharefromPoolDetails {
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
-
 			
 			WebElement storageNav = driver.findElement(By.id("storage_nav"));
 			storageNav.click();
-
+			
 			// Add Pool with Raid 0
 			WebElement poolsNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav.click();
-
+			
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
 
@@ -85,40 +85,58 @@ public class CreateSharefromPoolDetails {
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
 
+			///// Create a share
+
+			//Shares navigation bar
+			WebElement sharesNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav.click();
 
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
 			addShareButton.click();
 
-
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
-
 
 			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
 			selectPoolDroplist.selectByIndex(0); 
 
 
 			WebElement shareSize = driver.findElement(By.id("share_size"));
-			shareSize.sendKeys("100"); 
+			shareSize.sendKeys("100");
 
 
-			//Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
-			//selectSizeDroplist.selectByIndex(0);//Index 0 is KB
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			selectSizeDroplist.selectByIndex(2); // 2 is GB
 
 
 			//Submit button to create share
 			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
 			shareSubmitButton.click();
-
+				
+			WebElement shareLink = driver.findElement(By.linkText("share1"));
+			shareLink.click();
 			
+			WebElement shareAccessControl = driver.findElement(By.linkText("Access control"));
+			shareAccessControl.click();
+			
+			WebElement shareEdit = driver.findElement(By.linkText("Edit"));
+			shareEdit.click();
+			
+			//change share Permission  
+			WebElement groupCheckBox1 = driver.findElement(By.xpath("//input[@value='group-r']"));
+			groupCheckBox1.click();
+			WebElement otherCheckBox2 = driver.findElement(By.xpath("//input[@value='other-w']"));
+			otherCheckBox2.click();
+			
+			WebElement shareEditSave = driver.findElement(By.linkText("Save"));
+			shareEditSave.click();
 			
 			//Delete share
 			
-			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.className("icon-trash"));
+			WebElement deleteShare = driver.findElement(By.xpath("//button[contains(text(),'Delete')]"));
 			deleteShare.click();
-
+			
 
 			//Browser Popup asking confirmation to delete 
 			Alert alertDeleteShare = driver.switchTo().alert();
@@ -128,6 +146,7 @@ public class CreateSharefromPoolDetails {
 			// Delete Pool
 			WebElement poolsNav1 = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav1.click();
+			
 
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
 			WebElement deletePool = poolRow.findElement(By.className("icon-trash"));
@@ -141,28 +160,44 @@ public class CreateSharefromPoolDetails {
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(By.id("logout_user"));
+            logoutSubmit.click();
 
-			logoutSubmit.click();
+		}	
+            catch(Exception e){
+    			File screenshotFile = ((TakesScreenshot)driver)
+    					.getScreenshotAs(OutputType.FILE);
+    			FileUtils.copyFile(screenshotFile,
+    					new File(RSProps.getProperty("screenshotDir") 
+    							+ "/" + this.getClass().getName()+".png"));
+    			throw e;
 
-		}
-		catch(Exception e){
-			File screenshotFile = ((TakesScreenshot)driver)
-					.getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,
-					new File(RSProps.getProperty("screenshotDir") 
-							+ "/" + this.getClass().getName()+".png"));
-			throw e;
+    		}
 
-		}
+    	}
 
-	}
+    	@AfterClass
+    	public static void tearDownAfterClass() throws Exception {
+    		driver.quit();
+    	}
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		driver.quit();
-	}
+    }
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
