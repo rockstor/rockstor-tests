@@ -85,9 +85,9 @@ public class AddPoolRaid0with2Disks {
 			raidConfigDroplist.selectByIndex(1);
 			
 			//Select Disks CheckBox
-            WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+            WebElement diskCheckBox1 = driver.findElement(By.id("xvdb"));
             diskCheckBox1.click();
-            WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
+            WebElement diskCheckBox2 = driver.findElement(By.id("xvdc"));
             diskCheckBox2.click();
 
 			//Create Pool

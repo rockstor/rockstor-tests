@@ -59,105 +59,17 @@ public class CreateSnapshotFromShares {
 			WebElement systemNav = driver.findElement(By.id("storage_nav"));
 			systemNav.click();
 
-
-			// Select pools from storage side bar
-			WebElement poolNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
-			poolNav.click();
-
-			//Explicit Wait for Create Pool button to load
-			WebElement myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(
-							By.id("add_pool")));
-
-			WebElement addPool = driver.findElement(By.id("add_pool"));
-			addPool.click();
-
-			//Explicit Wait for Create Pool page. 
-			myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(
-							By.id("create_pool")));
-
-			///Fill up form for pool creation
-
-			//Pool Name
-			WebElement poolname = driver.findElement(By.id("pool_name"));
-			poolname.sendKeys("newtestpool");
-
-			//Raid Configuration Dropdown box 
-			Select raidConfigDroplist = new Select(
-					driver.findElement(By.id("raid_level")));   
-			raidConfigDroplist.selectByIndex(1);
-
-			//Select Disks CheckBox
-			WebElement diskCheckBox1 = driver.findElement(By.id("xvdb"));
-			diskCheckBox1.click();
-			WebElement diskCheckBox2 = driver.findElement(By.id("xvdc"));
-			diskCheckBox2.click();
-
-			//Create Pool
-			WebElement createPool = driver.findElement(By.id("create_pool"));
-			createPool.click();
-
-
-			myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("add_pool")));
-
-			//verify that pool is created
-			WebElement verifyPoolCreated = driver.findElement(
-					By.linkText("newtestpool"));
-			assertTrue(verifyPoolCreated.getText(),true);
-
+			
 			// Select shares from storage side bar
 			WebElement sharesNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
 			sharesNav.click();
 
-			myWaitElement = (new WebDriverWait(driver, 150))
+			WebElement myWaitElement = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(By.id("add_share")));
 
-			// Create share Button
-			WebElement createShare = driver.findElement(By.id("add_share"));
-			createShare.click();
-
-
-			myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("create_share")));
-
-			/// Fillup form for Share Creation
-
-			//Share Name
-			WebElement shareName = driver.findElement(By.id("share_name"));
-			shareName.sendKeys("newshare");
-
-			//Select Pool
-			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
-			selectPoolDroplist.selectByValue("newtestpool"); 
-
-			//Share Size
-			WebElement shareSize = driver.findElement(By.id("share_size"));
-			shareSize.sendKeys("1000"); 
-
-			//Select Share Size
-			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
-			selectSizeDroplist.selectByIndex(0);//Index 0 is KB
-
-
-			//Submit button to create share
-			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
-			shareSubmitButton.click();
-
-
-			// Wait for shares page to load up
-			myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(By.id("add_share")));
-
-			//verify that share is created
-			WebElement verifyShareCreated = driver.findElement(
-					By.linkText("newshare"));
-			assertTrue(verifyShareCreated.getText(),true);
-
-
+			
 			// Share link
-			WebElement shareLink = driver.findElement(By.linkText("newshare"));
+			WebElement shareLink = driver.findElement(By.linkText("share3"));
 			shareLink.click();
 
 			// wait for newshare page to load
@@ -166,7 +78,7 @@ public class CreateSnapshotFromShares {
 
 			//Select Snapshot from navigation
 
-			WebElement snapNav = driver.findElement(By.xpath("//div/ul/li/a[contains(@href, 'snapshots')]"));
+			WebElement snapNav = driver.findElement(By.xpath("//div/ul/li/a[contains(text(),'Snapshots')]"));
 			snapNav.click();
 
 			// Wait for snapshot page to load
@@ -181,7 +93,7 @@ public class CreateSnapshotFromShares {
 
 			//Snapshot Name
 			WebElement snapshotName = driver.findElement(By.id("snapshot-name"));
-			snapshotName.sendKeys("newsnap");
+			snapshotName.sendKeys("newsnapshot");
 
 			// Check box to make visible for users
 			WebElement makeVisible = driver.findElement(By.cssSelector("input[id='snapshot-visible']"));
@@ -197,7 +109,7 @@ public class CreateSnapshotFromShares {
 
 			//verify that snapshot is created
 			List <WebElement> verifySnapCreated = driver.findElements(
-					By.xpath("//*[@id='snapshots-table']/tbody/tr[td[contains(text(),'newsnap')]]"));
+					By.xpath("//*[@id='snapshots-table']/tbody/tr[td[contains(text(),'newsnapshot')]]"));
 			assertEquals(verifySnapCreated.size(), 1);
 
 
@@ -222,7 +134,7 @@ public class CreateSnapshotFromShares {
 	}
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-		//driver.quit();
+		driver.quit();
 	}
 }
 
