@@ -47,27 +47,34 @@ public class DeletePool {
 			driver.get(RSProps.getProperty("RockstorVm"));
 
 			// Login 
-			WebElement username = driver.findElement(By.id("inputUsername"));
+			WebElement username = driver.findElement(By.id("username"));
 			username.sendKeys("admin");
 
-			WebElement password = driver.findElement(By.id("inputPassword"));
+			WebElement password = driver.findElement(By.id("password"));
 			password.sendKeys("admin");
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
-			
-			// Delete Pool
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
 
-			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
-			deletePool.click();
+			// Delete Pool
+
+			// Select Storage from Navigation bar
+			WebElement storageNav = driver.findElement(By.id("storage_nav"));
+			storageNav.click();
+
+			// Select pools from storage side bar
+			WebElement poolsNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
+			poolsNav.click();
 			
+			
+			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
+			WebElement deletePool = poolRow.findElement(By.xpath("td/a/i[contains(@class,'icon-trash')]"));
+			deletePool.click();
+
 			//Browser Popup asking confirmation to delete 
 			Alert alertDeletePool = driver.switchTo().alert();
 			alertDeletePool.accept();
-			
+
 			WebElement textVerify = driver.findElement(
 					By.xpath("//h4[text()='No pools have been created.']"));
 			assertTrue(textVerify.getText(),true);

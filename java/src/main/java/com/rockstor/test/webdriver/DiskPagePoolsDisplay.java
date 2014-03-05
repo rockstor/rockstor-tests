@@ -1,38 +1,41 @@
 package com.rockstor.test.webdriver;
-import java.io.File;
-import java.io.FileInputStream;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.Select; // Dropdown menu
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;// Explicit Waits
-import org.openqa.selenium.support.ui.WebDriverWait; 
-import org.apache.commons.io.FileUtils; // Screenshots
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot; 
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.rockstor.test.util.RSProps;
 
-import java.io.IOException;
-import java.util.Properties;
-
-
-public class AddPoolRaid0with5Disks {
+public class DiskPagePoolsDisplay {
 
 	private static WebDriver driver;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		driver = new FirefoxDriver();
-	}
 
+		driver = new FirefoxDriver();
+		driver.manage().timeouts().implicitlyWait(
+				Integer.parseInt(RSProps.getProperty("waitTimeout")), 
+				TimeUnit.SECONDS);	
+
+	}
 	@Test
-	public void testPool() throws Exception {
+	public void testPoolsPresent() throws Exception {
 		try{
 
 			driver.get(RSProps.getProperty("RockstorVm"));
@@ -50,10 +53,12 @@ public class AddPoolRaid0with5Disks {
 					By.id("sign_in"));
 			submitButton.click();
 
+
+
 			// Select Storage from Navigation bar
 			WebElement storageNav = driver.findElement(By.id("storage_nav"));
 			storageNav.click();
-
+			
 
 			// Select pools from storage side bar
 			WebElement poolNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
@@ -74,41 +79,41 @@ public class AddPoolRaid0with5Disks {
 
 
 			WebElement poolname = driver.findElement(By.id("pool_name"));
-			poolname.sendKeys("pool1");
+			poolname.sendKeys("pool2");
 
 			//Raid Configuration Dropdown box 
 			Select raidConfigDroplist = new Select(
 					driver.findElement(By.id("raid_level")));   
-			raidConfigDroplist.selectByIndex(1);
+			raidConfigDroplist.selectByIndex(0);
 			
 			//Select Disks CheckBox
-            WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+            WebElement diskCheckBox1 = driver.findElement(By.id("xvdb"));
             diskCheckBox1.click();
-            WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
-            diskCheckBox2.click();
-            WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
-            diskCheckBox3.click();
-            WebElement diskCheckBox4 = driver.findElement(By.id("sde"));
-            diskCheckBox4.click();
-            WebElement diskCheckBox5 = driver.findElement(By.id("sdf"));
-            diskCheckBox5.click();
             
-            
-
 			//Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
 			
+			WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
+					.until(ExpectedConditions.elementToBeClickable(
+							By.id("add_pool")));
 
-			//Logout
+			// Select Disks from storage side bar
+			WebElement diskNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'disks')]"));
+			diskNav.click();
+
+			WebElement disksRow = driver.findElement(
+					By.xpath("//*[@id='disks-table']/tbody/tr/td[(contains(text(),'xvdb')) " + "" +
+							"and (contains(text(),'pool2'))]"));
+			assertTrue(disksRow.getText(),true);
+
+			// Logout 
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
 
 			logoutSubmit.click();
 
-
 		}
-		//catch any exceptions by taking screenshots
 		catch(Exception e){
 			File screenshotFile = ((TakesScreenshot)driver)
 					.getScreenshotAs(OutputType.FILE);
@@ -116,19 +121,16 @@ public class AddPoolRaid0with5Disks {
 					new File(RSProps.getProperty("screenshotDir") 
 							+ "/" + this.getClass().getName()+".png"));
 			throw e;
+
 		}
 
 	}
+
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		driver.quit();
 	}
+
+
 }
-
-
-
-
-
-
-
 

@@ -1,6 +1,7 @@
 package com.rockstor.test.webdriver;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -43,22 +44,26 @@ public class AddPoolRaid0with0Disks {
 			
             //User Login Input Forms
             WebElement username = driver.findElement(
-                    By.id("inputUsername"));
+                    By.id("username"));
 			username.sendKeys("admin");
 
             WebElement password = driver.findElement(
-                    By.id("inputPassword"));
+                    By.id("password"));
 			password.sendKeys("admin");
 
 			WebElement submitButton = driver.findElement(
                                         By.id("sign_in"));
 			submitButton.click();
 			
-			// Select Pools from Navigation bar
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
+			// Select Storage from Navigation bar
+			WebElement storageNav = driver.findElement(By.id("storage_nav"));
+			storageNav.click();
 
-			//Explicit Wait for Pools page to load
+			// Select pools from storage side bar
+			WebElement poolNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
+			poolNav.click();
+			
+			//Explicit Wait for Create Pool button to load
             WebElement myWaitElement1 = (new WebDriverWait(driver, 150))
                 .until(ExpectedConditions.elementToBeClickable(
                             By.id("add_pool")));
@@ -66,7 +71,7 @@ public class AddPoolRaid0with0Disks {
 			WebElement addPool = driver.findElement(By.id("add_pool"));
 			addPool.click();
 
-			//Explicit Wait for CreatePools page. 
+			//Explicit Wait for Create Pool page. 
 			WebElement myWaitElement2 = (new WebDriverWait(driver, 150))
 					.until(ExpectedConditions.elementToBeClickable(
                                 By.id("create_pool")));
@@ -78,21 +83,26 @@ public class AddPoolRaid0with0Disks {
 			//Raid Configuration Dropdown box 
 			Select raidConfigDroplist = new Select(
                     driver.findElement(By.id("raid_level")));   
-			raidConfigDroplist.selectByIndex(0);
+			raidConfigDroplist.selectByIndex(1);
 
 			//Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
-			
-            WebElement myWaitElement3 = (new WebDriverWait(driver, 150))
-                .until(ExpectedConditions.elementToBeClickable(
-                            By.id("delete_pool_pool1")));
 
+			//Verify Message Displayed
+			WebElement verifyErrorMsg = driver.findElement(
+                                        By.xpath("//div/label[text()='Raid0 requires at least 2 disks to be selected']"));
+                        assertTrue(verifyErrorMsg.getText(),true);
+			
+			
+            //Logout
             WebElement logoutSubmit = driver.findElement(
                     By.id("logout_user"));
 
             logoutSubmit.click();
-        }
+
+  
+      }
 		//catch any exceptions by taking screenshots
 		catch(Exception e){
             File screenshotFile = ((TakesScreenshot)driver)

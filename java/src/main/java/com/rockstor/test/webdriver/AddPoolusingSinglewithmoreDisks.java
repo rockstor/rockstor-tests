@@ -1,10 +1,17 @@
 package com.rockstor.test.webdriver;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.junit.Ignore;
+import org.junit.BeforeClass;
+import org.junit.AfterClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
 import java.io.File;
 import java.io.FileInputStream;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,14 +22,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.apache.commons.io.FileUtils; // Screenshots
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot; 
-
-import com.rockstor.test.util.RSProps;
-
 import java.io.IOException;
 import java.util.Properties;
 
+import com.rockstor.test.util.RSProps;
 
-public class AddPoolRaid0with5Disks {
+
+public class AddPoolusingSinglewithmoreDisks {
 
 	private static WebDriver driver;
 
@@ -54,7 +60,6 @@ public class AddPoolRaid0with5Disks {
 			WebElement storageNav = driver.findElement(By.id("storage_nav"));
 			storageNav.click();
 
-
 			// Select pools from storage side bar
 			WebElement poolNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolNav.click();
@@ -79,27 +84,22 @@ public class AddPoolRaid0with5Disks {
 			//Raid Configuration Dropdown box 
 			Select raidConfigDroplist = new Select(
 					driver.findElement(By.id("raid_level")));   
-			raidConfigDroplist.selectByIndex(1);
-			
-			//Select Disks CheckBox
-            WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
-            diskCheckBox1.click();
-            WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
-            diskCheckBox2.click();
-            WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
-            diskCheckBox3.click();
-            WebElement diskCheckBox4 = driver.findElement(By.id("sde"));
-            diskCheckBox4.click();
-            WebElement diskCheckBox5 = driver.findElement(By.id("sdf"));
-            diskCheckBox5.click();
-            
-            
+			raidConfigDroplist.selectByIndex(0);
 
+			//Select a Single Disk
+			WebElement diskCheckBox1 = driver.findElement(By.id("sdb"));
+			diskCheckBox1.click();
+			WebElement diskCheckBox2 = driver.findElement(By.id("sdc"));
+			diskCheckBox2.click();
+			WebElement diskCheckBox3 = driver.findElement(By.id("sdd"));
+			diskCheckBox3.click();
+
+			
 			//Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
-			
 
+		
 			//Logout
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
@@ -119,16 +119,9 @@ public class AddPoolRaid0with5Disks {
 		}
 
 	}
+
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		driver.quit();
 	}
 }
-
-
-
-
-
-
-
-

@@ -8,13 +8,14 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.apache.commons.io.FileUtils; // Screenshots
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot; 
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select; // Dropdown menu
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -32,7 +33,7 @@ public class CreateShareinGb {
 	public static void setUpBeforeClass() throws Exception {
 		driver = new FirefoxDriver();
 		driver.manage().timeouts().implicitlyWait(
-				Integer.parseInt(RSProps.getProperty("waitTimeout")), 
+				Integer.parseInt(RSProps.getProperty("waitTimeout")),
 				TimeUnit.SECONDS);	
 	}
 
@@ -42,18 +43,22 @@ public class CreateShareinGb {
 
 			driver.get(RSProps.getProperty("RockstorVm"));
 
-			// Login 
-			WebElement username = driver.findElement(By.id("inputUsername"));
+			// Login
+			WebElement username = driver.findElement(By.id("username"));
 			username.sendKeys("admin");
 
-			WebElement password = driver.findElement(By.id("inputPassword"));
+			WebElement password = driver.findElement(By.id("password"));
 			password.sendKeys("admin");
 
 			WebElement submit = driver.findElement(By.id("sign_in"));
 			submit.click();
 
-			// Add Pool with Raid 0
-			WebElement poolsNav = driver.findElement(By.id("pools_nav"));
+
+			WebElement storageNav = driver.findElement(By.id("storage_nav"));
+			storageNav.click();
+
+		/*	// Add Pool with Raid 0
+			WebElement poolsNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
 			poolsNav.click();
 
 			WebElement addPool = driver.findElement(By.id("add_pool"));
@@ -62,9 +67,9 @@ public class CreateShareinGb {
 			WebElement poolname = driver.findElement(By.id("pool_name"));
 			poolname.sendKeys("pool1");
 
-			// Raid Configuration Dropdown box 
+			// Raid Configuration Dropdown box
 			Select raidConfigDroplist = new Select(driver.findElement(
-					By.id("raid_level")));   
+					By.id("raid_level")));
 			raidConfigDroplist.selectByIndex(0);
 
 			//Select Disks CheckBox
@@ -76,7 +81,7 @@ public class CreateShareinGb {
 			// Create Pool
 			WebElement createPool = driver.findElement(By.id("create_pool"));
 			createPool.click();
-
+*/
 			//wait for pool1 to appear
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
 			poolLink.click();
@@ -84,8 +89,8 @@ public class CreateShareinGb {
 			///// Create a share
 
 			//Shares navigation bar
-			WebElement shareNav = driver.findElement(By.id("shares_nav"));
-			shareNav.click();
+			WebElement sharesNav = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav.click();
 
 			//Add share
 			WebElement addShareButton = driver.findElement(By.id("add_share"));
@@ -94,46 +99,115 @@ public class CreateShareinGb {
 			WebElement shareName = driver.findElement(By.id("share_name"));
 			shareName.sendKeys("share1");
 
-			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));   
-			selectPoolDroplist.selectByIndex(0); 
+			Select selectPoolDroplist = new Select(driver.findElement(By.id("pool_name")));
+			selectPoolDroplist.selectByIndex(0);
 
 
 			WebElement shareSize = driver.findElement(By.id("share_size"));
-			shareSize.sendKeys("100");
+			shareSize.sendKeys("1");
 
 
-			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));   
+			Select selectSizeDroplist = new Select(driver.findElement(By.id("size_format")));
 			selectSizeDroplist.selectByIndex(2); // 2 is GB
 
 
 			//Submit button to create share
 			WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
 			shareSubmitButton.click();
-			
+
 			//check for the text
 			WebElement shareRowToCheckSize = driver.findElement(
-					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'100.00 Gb')]]"));
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'1.00 Gb')]]"));
+			assertTrue(shareRowToCheckSize.getText(),true);
+
+			// create share2
+		
+			//Add share
+			addShareButton = driver.findElement(By.id("add_share"));
+			addShareButton.click();
+
+			shareName = driver.findElement(By.id("share_name"));
+			shareName.sendKeys("share2");
+
+			Select selectPoolDroplist2 = new Select(driver.findElement(By.id("pool_name")));
+			selectPoolDroplist2.selectByIndex(0);
+
+
+			shareSize = driver.findElement(By.id("share_size"));
+			shareSize.sendKeys("1");
+
+
+			Select selectSizeDroplist2 = new Select(driver.findElement(By.id("size_format")));
+			selectSizeDroplist2.selectByIndex(2); // 2 is GB
+
+
+			//Submit button to create share
+			shareSubmitButton = driver.findElement(By.id("create_share"));
+			shareSubmitButton.click();
+
+			//check for the text
+			shareRowToCheckSize = driver.findElement(
+					By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'1.00 Gb')]]"));
 			assertTrue(shareRowToCheckSize.getText(),true);
 			
+			// create share3
+				//Add share
+				addShareButton = driver.findElement(By.id("add_share"));
+				addShareButton.click();
 
-			// Delete Share
+				shareName = driver.findElement(By.id("share_name"));
+				shareName.sendKeys("share3");
 
-			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
-			sharesNav.click();
+				Select selectPoolDroplist3 = new Select(driver.findElement(By.id("pool_name")));
+				selectPoolDroplist3.selectByIndex(0);
+
+
+				shareSize = driver.findElement(By.id("share_size"));
+				shareSize.sendKeys("1");
+
+
+				Select selectSizeDroplist3 = new Select(driver.findElement(By.id("size_format")));
+				selectSizeDroplist3.selectByIndex(2); // 2 is GB
+
+
+				//Submit button to create share
+				shareSubmitButton = driver.findElement(By.id("create_share"));
+				shareSubmitButton.click();
+
+				//check for the text
+				shareRowToCheckSize = driver.findElement(
+						By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'1.00 Gb')]]"));
+				assertTrue(shareRowToCheckSize.getText(),true);
+
+
+		/*	// Delete Share
+
+			WebElement sharesNav1= driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+			sharesNav1.click();
 
 			WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'share1')]]"));
-			WebElement deleteShare = shareRow.findElement(By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
+			WebElement deleteShare = shareRow.findElement(By.className("icon-trash"));
 			deleteShare.click();
 
+			//Browser Popup asking confirmation to delete
+			Alert alertDeleteShare = driver.switchTo().alert();
+			alertDeleteShare.accept();
+
 			// Delete Pool
-			poolsNav = driver.findElement(By.id("pools_nav"));
-			poolsNav.click();
+			WebElement poolsNav1 = driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'pools')]"));
+			poolsNav1.click();
 
 			WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr[td[contains(.,'pool1')]]"));
-			WebElement deletePool = poolRow.findElement(By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
+			WebElement deletePool = poolRow.findElement(By.className("icon-trash"));
 			deletePool.click();
 
-			// Logout 
+			//Browser Popup asking confirmation to delete
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.accept();
+			
+			*/
+
+			// Logout
 			WebElement logoutSubmit = driver.findElement(
 					By.id("logout_user"));
 
@@ -144,7 +218,7 @@ public class CreateShareinGb {
 			File screenshotFile = ((TakesScreenshot)driver)
 					.getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(screenshotFile,
-					new File(RSProps.getProperty("screenshotDir") 
+					new File(RSProps.getProperty("screenshotDir")
 							+ "/" + this.getClass().getName()+".png"));
 			throw e;
 
@@ -158,4 +232,3 @@ public class CreateShareinGb {
 	}
 
 }
-

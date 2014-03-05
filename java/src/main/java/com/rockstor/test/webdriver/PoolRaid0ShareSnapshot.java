@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -80,7 +81,7 @@ public class PoolRaid0ShareSnapshot {
 
 			/// wait and check for pool1 to appear
 			WebElement poolLink = driver.findElement(By.linkText("pool1"));
-			
+			poolLink.click();
 			///// Create a share
 
 			//Shares navigation bar
@@ -140,6 +141,10 @@ public class PoolRaid0ShareSnapshot {
 			WebElement deleteSnapshot = snapshotRow.findElement(
 					By.xpath("td/button[contains(@data-name,'snapshot1') and contains(@data-action,'delete')]"));
 			deleteSnapshot.click();
+						
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteSnapshot = driver.switchTo().alert();
+			alertDeleteSnapshot.accept();
 
 
 			// check for the text present after delete snapshots
@@ -158,7 +163,11 @@ public class PoolRaid0ShareSnapshot {
 			WebElement deleteShare = shareRow.findElement(
 					By.xpath("td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
 			deleteShare.click();
-
+			
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteShare = driver.switchTo().alert();
+			alertDeleteShare.accept();
+			
 			// Delete Pool
 			poolsNav = driver.findElement(By.id("pools_nav"));
 			poolsNav.click();
@@ -168,6 +177,10 @@ public class PoolRaid0ShareSnapshot {
 			WebElement deletePool = poolRow.findElement(
 					By.xpath("td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
 			deletePool.click();
+						
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.accept();
 
 			// Logout 
 			WebElement logoutSubmit = driver.findElement(

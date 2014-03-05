@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -105,11 +106,7 @@ public class PoolRaid0ShareNFS {
 			WebElement shareSubmitButton = driver.findElement(
                     By.id("create_share"));
 			shareSubmitButton.click();
-			
-		    // Wait for shares page to load up
-			//WebElement myWaitElement6 = (new WebDriverWait(driver, 150))
-			//		.until(ExpectedConditions.elementToBeClickable(By.id("add_share")));
-           
+		
             ///// Export NFS
 			
             // Share link
@@ -145,6 +142,10 @@ public class PoolRaid0ShareNFS {
             WebElement deleteNFS = nfsRow.findElement(By.xpath("//td/button[contains(@class,'delete-row')]"));
             deleteNFS.click();
             
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteNfsExport = driver.switchTo().alert();
+			alertDeleteNfsExport.accept();
+            
             // Delete Share
 			WebElement sharesNav = driver.findElement(By.id("shares_nav"));
 			sharesNav.click();
@@ -152,6 +153,12 @@ public class PoolRaid0ShareNFS {
             WebElement shareRow = driver.findElement(By.xpath("//*[@id='shares-table']/tbody/tr/td[contains(.,'share1')]"));
             WebElement deleteShare = shareRow.findElement(By.xpath("//td/button[contains(@data-name,'share1') and contains(@data-action,'delete')]"));
             deleteShare.click();
+            
+
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeleteShare = driver.switchTo().alert();
+			alertDeleteShare.accept();
+
 
             // Delete Pool
 			poolsNav = driver.findElement(By.id("pools_nav"));
@@ -160,6 +167,12 @@ public class PoolRaid0ShareNFS {
             WebElement poolRow = driver.findElement(By.xpath("//*[@id='pools-table']/tbody/tr/td[contains(.,'pool1')]"));
             WebElement deletePool = poolRow.findElement(By.xpath("//td/button[contains(@data-name,'pool1') and contains(@data-action,'delete')]"));
             deletePool.click();
+            
+
+			//Browser Popup asking confirmation to delete 
+			Alert alertDeletePool = driver.switchTo().alert();
+			alertDeletePool.accept();
+
 
             // Logout 
             WebElement logoutSubmit = driver.findElement(
