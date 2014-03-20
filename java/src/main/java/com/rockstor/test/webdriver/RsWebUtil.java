@@ -9,6 +9,7 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -98,6 +99,49 @@ public class RsWebUtil {
         //Submit the form 
         WebElement createPool = driver.findElement(By.id("create_pool"));
         createPool.click();
+    }
+
+
+    public static void createShare(WebDriver driver, String poolName,
+            String shareName, int sizeInGb) throws Exception {
+
+        WebElement storageNav = driver.findElement(By.id("storage_nav"));
+        storageNav.click();
+
+        //Shares navigation bar
+        WebElement sharesNav = driver.findElement(
+                By.xpath(
+                    "//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]"));
+        sharesNav.click();
+
+        // Add share
+        WebElement addShareButton = driver.findElement(By.id("add_share"));
+        addShareButton.click();
+
+        // Enter share name
+        WebElement shareNameEl = driver.findElement(By.id("share_name"));
+        shareNameEl.sendKeys(shareName);
+
+        // Select pool
+        Select selectPoolDroplist = new Select(driver.findElement(
+                    By.id("pool_name")));
+        selectPoolDroplist.selectByValue(poolName);
+
+        WebElement shareSize = driver.findElement(By.id("share_size"));
+        shareSize.sendKeys(Integer.toString(sizeInGb));
+
+        Select selectSizeDroplist = new Select(driver.findElement(
+                    By.id("size_format")));
+        selectSizeDroplist.selectByIndex(2); // 2 is GB
+
+        //Submit button to create share
+        WebElement shareSubmitButton = driver.findElement(By.id("create_share"));
+        shareSubmitButton.click();
+
+        WebElement shareRowToCheckSize = driver.findElement(
+                By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.," 
+                    + shareName + ")]]"));
+        assertTrue(shareRowToCheckSize.getText(),true);
     }
 
 }
