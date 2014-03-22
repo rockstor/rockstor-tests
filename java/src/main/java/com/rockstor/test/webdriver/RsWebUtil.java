@@ -143,6 +143,48 @@ public class RsWebUtil {
                     + shareName + ")]]"));
         assertTrue(shareRowToCheckSize.getText(),true);
     }
+    
+    public static void createSambaExport(WebDriver driver, String shareName, 
+            String adminUser, boolean browsable, boolean guestOk, 
+            boolean readOnly, String comment) throws Exception {
+			
+        // Select Storage from Navigation bar
+        driver.findElement(By.id("storage_nav")).click();
+
+        // Select Samba from sidebar
+        driver.findElement(By.xpath("//div[@class='subnav']/ul/li/a[contains(@href,'samba-exports')]")).click();
+        
+        // Go to Samba export form
+        driver.findElement(By.id("add-samba-export")).click();
+
+        //Select Share from combo box
+        Select shareCombobox = new Select(driver.findElement(By.id("share")));
+        shareCombobox.selectByValue(shareName);
+
+        //Admin Users
+        WebElement adminUserEl = driver.findElement(By.id("admin_users"));
+        adminUserEl.sendKeys(adminUser);
+
+        // Browsable
+        Select browsableEl = new Select (driver.findElement(By.id("browsable")));
+        browsableEl.selectByIndex(0);
+
+        // Guest Ok
+        Select guestOkEl = new Select(driver.findElement(By.id("guest_ok")));   
+        guestOkEl.selectByIndex(1);
+
+        // Read only
+        Select readOnlyEl = new Select(driver.findElement(By.id("read_only")));   
+        readOnlyEl.selectByIndex(1);
+
+        //Comment
+        WebElement commentEl = driver.findElement(By.id("comment"));
+        commentEl.sendKeys("");
+
+        WebElement saveButton = driver.findElement(By.id("create-samba-export"));
+        saveButton.click();
+
+    }
 
 }
 
