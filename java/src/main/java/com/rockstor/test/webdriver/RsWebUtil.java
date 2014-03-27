@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -82,7 +84,6 @@ public class RsWebUtil {
         WebElement disksTable = driver.findElement(By.id("disks-table"));
         List<WebElement> diskRows = disksTable.findElement(By.tagName("tbody"))
             .findElements(By.tagName("tr"));
-        System.out.println("Number of free disks is " + diskRows.size());
         if (diskRows.size() < 2) {
             throw new Exception("Not enough free disks to create a " +
                     " Raid0 pool");
@@ -99,6 +100,14 @@ public class RsWebUtil {
         //Submit the form 
         WebElement createPool = driver.findElement(By.id("create_pool"));
         createPool.click();
+
+        // wait till pools page is loaded
+        addPool = driver.findElement(By.id("add_pool"));
+        // verify that row with poolName exists
+        List <WebElement> poolRow = driver.findElements(
+                By.xpath("//*[@id='pools-table']/tbody/tr[td[a[contains(text(),'" 
+                    + poolName + "')]]]"));
+        assertEquals(poolRow.size(),1);
     }
 
 
@@ -139,8 +148,8 @@ public class RsWebUtil {
         shareSubmitButton.click();
 
         WebElement shareRowToCheckSize = driver.findElement(
-                By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.," 
-                    + shareName + ")]]"));
+                By.xpath("//*[@id='shares-table']/tbody/tr[td[contains(.,'" 
+                    + shareName + "')]]"));
         assertTrue(shareRowToCheckSize.getText(),true);
     }
     
@@ -175,7 +184,7 @@ public class RsWebUtil {
 
         // Read only
         Select readOnlyEl = new Select(driver.findElement(By.id("read_only")));   
-        readOnlyEl.selectByIndex(1);
+        readOnlyEl.selectByIndex(0);
 
         //Comment
         WebElement commentEl = driver.findElement(By.id("comment"));
@@ -184,7 +193,104 @@ public class RsWebUtil {
         WebElement saveButton = driver.findElement(By.id("create-samba-export"));
         saveButton.click();
 
+        // wait till samba page is loaded
+        driver.findElement(By.id("add-samba-export"));
+
+        // verify that row with poolName exists
+        List <WebElement> sambaRows = driver.findElements(
+                By.xpath("//*[@id='samba-table']/tbody/tr[td[text() = '" 
+                    + shareName + "']]"));
+        assertEquals(sambaRows.size(),1);
     }
+    
+    public static void createNfsExport(WebDriver driver, String[] shares, 
+            String hostStr, String adminHost, boolean writable, boolean sync) {
+
+        // Select System from Navigation bar
+        driver.findElement(By.id("storage_nav")).click();
+
+        // Select NFS from sidebar
+        driver.findElement(By.xpath("//div[@class='subnav']/ul/li/a[contains(@href,'nfs-exports')]")).click();
+        
+        // Go to add nfs export form
+        driver.findElement(By.id("add-nfs-export")).click();
+        // Create NFS Export 
+
+        //Select Share from combo box
+        Select shareCombobox = new Select(driver.findElement(By.id("shares")));
+        for (int i=0; i < shares.length; i++) {
+            shareCombobox.selectByValue(shares[i]);
+        }
+
+        // Host String
+        WebElement hostStrEl = driver.findElement(By.id("host_str"));
+        hostStrEl.sendKeys(hostStr);
+
+        // Admin Host 
+        WebElement adminHostEl = driver.findElement(By.id("admin_host"));
+        adminHostEl.sendKeys(adminHost);
+        
+        // Writable
+        Select writableEl = new Select(driver.findElement(By.id("mod_choice")));   
+        if (writable) {
+            writableEl.selectByValue("rw");
+        } else {
+            writableEl.selectByValue("ro");
+        }
+
+        // Sync
+        Select syncEl = new Select(driver.findElement(By.id("sync_choice")));   
+        if (sync) {
+            syncEl.selectByValue("sync");
+        } else {
+            syncEl.selectByValue("async");
+        }
+
+        WebElement submitButton = driver.findElement(By.id("create-nfs-export"));
+        submitButton.click();
+
+    }
+    
+    public static void createSnapshot(WebDriver driver, String shareName, 
+            String snapName, boolean visible) {
+			
+        // Select Storage from Navigation bar
+        driver.findElement(By.id("storage_nav")).click();
+
+        // Select shares from storage side bar
+        driver.findElement(By.xpath("//div[@id='sidebar-inner']/ul/li/a[contains(@href,'shares')]")).click();
+
+        // Share link
+        driver.findElement(By.linkText(shareName)).click();
+
+        //Select Snapshot from navigation
+        driver.findElement(By.xpath("//div/ul/li/a[contains(text(),'Snapshots')]")).click();
+
+        // Create snapshot			
+        WebElement snapshotButton = driver.findElement(By.id("js-snapshot-add"));
+        snapshotButton.click();
+
+        //Snapshot Name
+        WebElement snapshotName = driver.findElement(By.id("snapshot-name"));
+        snapshotName.sendKeys(snapName);
+
+        // Check box to make visible for users
+        if (visible) {
+            WebElement makeVisible = driver.findElement(By.cssSelector("input[id='snapshot-visible']"));
+            makeVisible.click();
+        }
+
+        // Submit button
+        WebElement createSnapshot = driver.findElement(By.id("js-snapshot-save"));
+        createSnapshot.click();
+
+        //verify that snapshot is created
+        List <WebElement> verifySnapCreated = driver.findElements(
+                By.xpath("//*[@id='snapshots-table']/tbody/tr[td[contains(text(),'" + snapName + "')]]"));
+        assertEquals(verifySnapCreated.size(), 1);
+
+    }
+
 
 }
 
