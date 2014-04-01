@@ -18,6 +18,8 @@ public class RsTestBase {
 	}
 
     public void handleException(Exception e) throws Exception {
+        e.printStackTrace();
+        // take a screenshot
         String filename = this.getClass().getName()+".png";
         RsWebUtil.takeScreenshot(driver, filename);
         throw e;

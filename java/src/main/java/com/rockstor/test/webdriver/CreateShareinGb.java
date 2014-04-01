@@ -37,7 +37,7 @@ public class CreateShareinGb extends RsTestBase {
             RsWebUtil.login(driver, RSProps.getProperty("username"), 
                     RSProps.getProperty("password"));
             
-            String poolName = "pool1";
+            String poolName = "p1";
 
             // Create 3 shares
             for (int i=0; i < 3; i++) {

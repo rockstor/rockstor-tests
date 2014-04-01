@@ -18,113 +18,32 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.rockstor.test.util.RSProps;
 
-public class NFSExport {
-
-	private static WebDriver driver;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		driver = new FirefoxDriver();
-	}
+public class NFSExport extends RsTestBase {
 
 	@Test
 	public void nfsExport() throws Exception {
+        String shareName = "share1";
+        String[] shares = new String[] {"share1"};
+        String hostStr = "192.168.56.101";
+        String adminHost = "192.168.56.101";
+        boolean writable = true;
+        boolean sync = true;
 		try{
 
-			driver.get(RSProps.getProperty("RockstorVm"));
+            RsWebUtil.login(driver, RSProps.getProperty("username"), 
+                    RSProps.getProperty("password"));
 
-			//User Login Input Forms
-			WebElement username = driver.findElement(
-					By.id("username"));
-			username.sendKeys("admin");
+            RsWebUtil.createNfsExport(driver, shares, hostStr, adminHost,
+                    writable, sync);
 
-			WebElement password = driver.findElement(
-					By.id("password"));
-			password.sendKeys("admin");
-
-			WebElement submitButton = driver.findElement(
-					By.id("sign_in"));
-			submitButton.click();
-
-			// Select System from Navigation bar
-			WebElement systemNav = driver.findElement(By.id("storage_nav"));
-			systemNav.click();
-
-			// Select NFS from system side bar
-			WebElement usersNav = driver.findElement(By.xpath("//div[@class='subnav']/ul/li/a[contains(@href,'nfs-exports')]"));
-			usersNav.click();
-
-			// Wait for add nfs-export button to appear
-			WebElement myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(
-							By.id("add-nfs-export")));
-
-			WebElement addSambaBtn = driver.findElement(By.id("add-nfs-export"));
-			addSambaBtn.click();
-
-			myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(
-							By.id("create-nfs-export")));
-
-			// Create NFS Export 
-
-			// Fillup form
-
-			//Select Share from combo box
-			Select shareCombobox = new Select(driver.findElement(By.id("shares")));
-			shareCombobox.selectByValue("share2");
-
-			// Host String
-			WebElement hostString = driver.findElement(By.id("host_str"));
-			hostString.sendKeys("192.168.1.20");
-
-			// Writable
-			Select guestOk = new Select(driver.findElement(By.id("mod_choice")));   
-			guestOk.selectByIndex(1);
-
-			// Sync
-			Select readOnly = new Select(driver.findElement(By.id("sync_choice")));   
-			readOnly.selectByIndex(0);
-
-			submitButton = driver.findElement(By.id("create-nfs-export"));
-			submitButton.click();
+            RsWebUtil.logout(driver);
 			
-			//wait until the page loads
-			myWaitElement = (new WebDriverWait(driver, 150))
-					.until(ExpectedConditions.elementToBeClickable(
-							By.id("add-nfs-export")));
-			
-		/*	WebElement element1 = driver.findElement(By.id("nfs-exports-table"));
-			List<WebElement> rowCollection = element1.findElements(By.xpath("//*[@id='nfs-exports-table']/tbody/tr/td[contains(.,"+hostString+")]"));
-			
-			
-			if(rowCollection.size() > 0)
-			{
-				assert true;
-			}
-			
-			else {
-				
-				assert false;
-			}
-			
-			*/
-
 		}
-		//catch any exceptions by taking screenshots
 		catch(Exception e){
-			File screenshotFile = ((TakesScreenshot)driver)
-					.getScreenshotAs(OutputType.FILE);
-			FileUtils.copyFile(screenshotFile,
-					new File(RSProps.getProperty("screenshotDir") 
-							+ "/" + this.getClass().getName()+".png"));
-			throw e;
+            handleException(e);
 		}
 	}
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		driver.quit();
-	}
+
 }
 
 
